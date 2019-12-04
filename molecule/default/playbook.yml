@@ -1,0 +1,27 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    - role: ANXS.postgresql
+      vars:
+        postgresql_version: 9.6
+        postgresql_users:
+          - name: onadata
+            pass: onadata
+            encrypted: true
+        postgresql_databases:
+          - name: onadata
+            owner: onadata
+            encoding: "UTF-8"
+            hstore: true
+            gis: true
+        postgresql_database_extensions:
+          - db: onadata
+            extensions:
+              - postgis
+        postgresql_ext_install_postgis: true
+        postgresql_ext_postgis_version: "2.3"
+
+    - role: ansible-onadata
+      vars:
+        onadata_pgsql_password: onadata

@@ -1,0 +1,26 @@
+---
+- name: Install the custom template # noqa 301
+  shell: "(git remote add template {{ onadata_custom_template_git_url }} || true) && git fetch template {{ onadata_custom_template_version }} && git reset HEAD onadata/libs/custom_template && rm -rf onadata/libs/custom_template && git read-tree --prefix=onadata/libs/custom_template -u template/{{ onadata_custom_template_version }}" # noqa 204
+  args:
+    executable: /bin/bash
+    chdir: "{{ onadata_checkout_path }}"
+
+- name: Install pricing library
+  pip:
+    name: "git+git@github.com:onaio/pricing.git@{{ pricing_version }}#egg=pricing"
+    virtualenv: "{{ onadata_venv_path }}"
+    extra_args: "-e"
+  when: onadata_include_pricing == "True"
+
+- name: Install google export library
+  pip:
+    name: "git+git@github.com:onaio/google-export.git@{{ onadata_google_export_version }}#egg=google-export"
+    virtualenv: "{{ onadata_venv_path }}"
+    extra_args: "-e"
+  when: onadata_include_google_export == "True"
+
+- name: Install tableau library
+  pip:
+    name: "git+https://github.com/onaio/ona-tableau-connector.git#egg=ona-tableau-connector"
+    virtualenv: "{{ onadata_venv_path }}"
+  when: onadata_include_tableau == "True"

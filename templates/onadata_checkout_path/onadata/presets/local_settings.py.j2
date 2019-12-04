@@ -1,0 +1,539 @@
+# get most settings from staging_example.py (which in turn, imports from
+# settings.py)
+from onadata.settings.common import *  # noqa
+from celery.task.schedules import crontab
+
+try:
+  from urllib.parse import urljoin
+except ImportError:
+  from urlparse import urljoin
+
+# # # now override the settings which came from staging # # # #
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': '{{ onadata_pgsql_db }}',
+        'USER': '{{ onadata_pgsql_user }}',
+        'PASSWORD': '{{ onadata_pgsql_password }}',
+        'HOST': '{{ onadata_pgsql_host }}',
+        'PORT': {{ onadata_pgsql_port }},
+        'DISABLE_SERVER_SIDE_CURSORS': {{ onadata_disable_server_side_cursors }},
+    },
+{% for cur_replica in onadata_pgsql_replicas.items() %}
+    '{{ cur_replica.id }}': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': '{{ cur_replica.name }}',
+        'USER': '{{ cur_replica.user }}',
+        'PASSWORD': '{{ cur_replica.password }}',
+        'CONN_MAX_AGE': {{ cur_replica.con_max_age }},
+        'HOST': '{{ cur_replica.host }}',
+        'PORT': {{ cur_replica.port }},
+        'DISABLE_SERVER_SIDE_CURSORS': {{ onadata_disable_server_side_cursors }},
+    },
+{% endfor %}
+}
+
+SLAVE_DATABASES = [{% for for cur_replica in onadata_pgsql_replicas.items() %}{{ cur_replica.id }},{% endfor %}]
+{% if onadata_pgsql_replicas.length() > 0 %}
+DATABASE_ROUTERS = ['multidb.PinningMasterSlaveRouter']
+MULTIDB_PINNING_SECONDS = 10
+{% endif %}
+
+{% if onadata_kpi_formbuilder_url.length() > 0 %}
+KPI_FORMBUILDER_URL = '{{ onadata_kpi_formbuilder_url }}'
+{% endif %}
+
+# Make a unique unique key just for teskpi_formbuilder_urlting, and don't share it with anybody.
+SECRET_KEY = '{{ onadata_django_secret_key }}'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+REST_FRAMEWORK = {
+    # Use hyperlinked styles by default.
+    # Only used if the `serializer_class` attribute is not set on a view.
+    'DEFAULT_MODEL_SERIALIZER_CLASS':
+    'rest_framework.serializers.HyperlinkedModelSerializer',
+
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+        'rest_framework.permissions.DjangoModelPermissions'
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'onadata.libs.authentication.DigestAuthentication',
+        'onadata.libs.authentication.SSOHeaderAuthentication',
+        'onadata.libs.authentication.TempTokenAuthentication',
+        'onadata.libs.authentication.EnketoTokenAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework_jsonp.renderers.JSONPRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+        'rest_framework_csv.renderers.CSVRenderer',
+    ),
+}
+OAUTH2_PROVIDER['AUTHORIZATION_CODE_EXPIRE_SECONDS'] = 600
+BROKER_TRANSPORT = 'librabbitmq'
+CELERY_BROKER_URL = '{{ onadata_celery_broker_url }}'
+CELERY_RESULT_BACKEND = "{{ onadata_celery_result_backend }}"
+
+TEMPLATE_OVERRIDE_ROOT_DIR = '{{ onadata_codebase_path }}/onadata/libs/custom_template'
+
+if isinstance(TEMPLATE_OVERRIDE_ROOT_DIR, basestring):
+        # site templates overrides
+        TEMPLATES[0]['DIRS'] = [
+            os.path.join(PROJECT_ROOT, TEMPLATE_OVERRIDE_ROOT_DIR, 'templates'),
+        ] + TEMPLATES[0]['DIRS']
+        # site static files path
+        STATICFILES_DIRS += (
+            os.path.join(PROJECT_ROOT, TEMPLATE_OVERRIDE_ROOT_DIR, 'static'),
+        )
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = '{{ onadata_smtp_host }}'
+EMAIL_PORT = '{{ onadata_smtp_port }}'
+EMAIL_HOST_USER = '{{ onadata_smtp_login }}'
+EMAIL_HOST_PASSWORD = '{{ onadata_smtp_password }}'
+EMAIL_USE_TLS = {{ onadata_smtp_use_tls }}
+DEFAULT_FROM_EMAIL = '{{ onadata_smtp_from }}'
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
+{% if onadata_use_aws %}
+AWS_ACCESS_KEY_ID = '{{ onadata_aws_access_key }}'
+AWS_SECRET_ACCESS_KEY = '{{ onadata_aws_secret_key }}'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_STORAGE_BUCKET_NAME = '{{ onadata_s3_bucket }}'
+AWS_DEFAULT_ACL = 'private'
+AWS_S3_FILE_OVERWRITE = False
+AWS_S3_SECURE_URLS = True
+AWS_S3_REGION_NAME = '{{ onadata_s3_region }}'
+{% endif %}
+
+ADMINS = (
+{% for cur_admin in onadata_email_admins %}
+    ('{{ cur_admin.name }}', '{{ cur_admin.email }}'),
+{% endfor %}
+)
+
+DEBUG = {{ onadata_debug }}
+TEMPLATES[0]['OPTIONS']['debug'] = {{ onadata_debug }}
+
+ALLOWED_HOSTS = [
+    '*',
+]
+
+# Cross Origin Requests (CORS)
+
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000',
+    'localhost:4000',
+    'localhost:8000',
+    'localhost:8080',
+{% for origin in onadata_cors_origin_whitelist %}
+    '{{ origin }}',
+{% endfor %}
+)
+
+CORS_ORIGIN_REGEX_WHITELIST = (
+{% for origin in onadata_cors_origin_regex_whitelist %}
+    r'{{ origin }}',
+{% endfor %}
+)
+
+CORS_EXPOSE_HEADERS = (
+    'Content-Type', 'Location', 'WWW-Authenticate', 'Content-Language',
+    'ETag', 'X-total')
+
+CORS_ALLOW_HEADERS = (
+    'x-requested-with',
+    'content-type',
+    'accept',
+    'origin',
+    'authorization',
+    'x-csrftoken',
+    'x-csrf-token',
+    'cache-control',
+    'if-none-match'
+)
+
+# Google credentials
+GOOGLE_SITE_VERIFICATION = '{{ onadata_google_site_verification }}'
+GOOGLE_ANALYTICS_PROPERTY_ID = '{{ onadata_google_analytics_property_id }}'
+GOOGLE_ANALYTICS_DOMAIN = '{{ onadata_domain }}'
+
+# Flags
+SITE_READ_ONLY = {{ onadata_read_only_mode }}
+TESTING_MODE = False
+
+# Enketo settings
+JWT_SECRET_KEY = '{{ onadata_jwt_secret_key }}'
+JWT_ALGORITHM = 'HS256'
+ENKETO_AUTH_COOKIE_DOMAIN = '{{ onadata_enketo_auth_cookie_domain }}'
+ENKETO_CLIENT_LOGIN_URL = '{{ onadata_enketo_login_url }}'
+ENKETO_URL = '{{ onadata_enketo_url }}'
+ENKETO_API_SURVEY_PATH = '/api_v2/survey'
+ENKETO_PREVIEW_URL = urljoin(ENKETO_URL, ENKETO_API_SURVEY_PATH + '/preview')
+ENKETO_API_INSTANCE_IFRAME_URL = ENKETO_URL + 'api_v1/instance/iframe'
+ENKETO_API_SALT = '{{ onadata_enketo_api_salt }}'
+ENKETO_API_TOKEN = '{{ onadata_enketo_api_token }}'
+if {{ onadata_enketo_offline }}:
+    ENKETO_API_INSTANCE_IFRAME_URL = urljoin(
+        ENKETO_URL, 'api_v2/instance/iframe')
+    ENKETO_API_SURVEY_PATH = '/api_v2/survey'
+    ENKETO_API_INSTANCE_PATH = '/api_v2/instance'
+    ENKETO_PREVIEW_URL = urljoin(
+        ENKETO_URL, ENKETO_API_SURVEY_PATH + '/preview')
+    ENKETO_API_SURVEY_PATH = urljoin(
+        ENKETO_URL, ENKETO_API_SURVEY_PATH + '/offline')
+
+ENKETO_AUTH_COOKIE = '{{ onadata_enketo_auth_cookie }}'
+ENKETO_META_UID_COOKIE = '{{ onadata_enketo_meta_uid_cookie }}'
+
+if {{ onadata_use_aws }}:
+    # source http://dryan.me/articles/elb-django-allowed-hosts/
+    # add ec2 private ip - ensures load balancer has access
+    import requests
+    EC2_PRIVATE_IP = None
+    try:
+        EC2_PRIVATE_IP = requests.get(
+            'http://169.254.169.254/latest/meta-data/local-ipv4',
+            timeout=0.01
+        ).text
+    except requests.exceptions.RequestException:
+        pass
+
+    if EC2_PRIVATE_IP:
+        ALLOWED_HOSTS.append(EC2_PRIVATE_IP)
+else:
+    MEDIA_URL = "https://{{ onadata_domain }}/media/"
+    MEDIA_ROOT = os.path.join('/', 'home', 'onadata', 'media/')
+
+# Celery
+CELERY_TASK_ROUTES = {
+    'onadata.apps.api.tasks.publish_xlsform_async': {
+        'queue': 'publish_xlsform'},
+    'onadata.apps.viewer.tasks.create_xls_export': {'queue': 'xls_exports'},
+    'onadata.apps.viewer.tasks.create_csv_export': {'queue': 'csv_exports'},
+    'onadata.apps.viewer.tasks.create_kml_export': {'queue': 'kml_exports'},
+    'onadata.apps.viewer.tasks.create_osm_export': {'queue': 'osm_exports'},
+    'onadata.apps.viewer.tasks.create_zip_export': {'queue': 'zip_exports'},
+    'onadata.apps.viewer.tasks.create_csv_zip_export': {'queue': 'csv_zip_exports'},
+    'onadata.apps.viewer.tasks.create_sav_zip_export': {'queue': 'sav_zip_exports'},
+    'onadata.apps.viewer.tasks.create_external_export': {'queue': 'external_exports'},
+    'onadata.apps.viewer.tasks.create_google_sheet_export': {
+        'queue': 'exports'},
+    'google_export.tasks.call_google_sheet_service': {
+        'queue': 'google_export'},
+    'google_export.tasks.sync_update_google_sheets': {
+      'queue': 'google_export'},
+}
+
+CELERY_BEAT_SCHEDULE = {
+    'Mark-Expired-Exports-Failed': {
+        'task':
+        'onadata.apps.viewer.tasks.mark_expired_pending_exports_as_failed',
+        'schedule': {{ onadata_celery_beat_mark_exports_expired_schedule }},
+        'options': {'ignore_result': True}
+    },
+    'Delete-Expired-Failed-Exports': {
+        'task': 'onadata.apps.viewer.tasks.delete_expired_failed_exports',
+        'schedule': {{ onadata_celery_beat_delete_expired_exports_schedule }},
+        'options': {'ignore_result': True}
+    },
+    'celery.backend_cleanup': {
+        'task': 'celery.backend_cleanup',
+        'schedule': {{ onadata_celery_backend_cleanup_schedule }},
+        'options': {'ignore_result': True}
+    },
+}
+
+CELERY_TASK_RESULT_EXPIRES = {{ onadata_celery_task_result_expires }}
+
+# Set Cache-Control: max-age=30 seconds
+CACHE_MIXIN_SECONDS = {{ onadata_cache_control_max_age }}
+
+OAUTH2_PROVIDER_APPLICATION_MODEL = "oauth2_provider.Application"
+
+INSTALLED_APPS = ('readonly' ,'django.forms', 'raven.contrib.django.raven_compat',) + INSTALLED_APPS
+FORM_RENDERER = u'django.forms.renderers.TemplatesSetting'
+APPS_DIR = True
+
+# mainly for data submission attachments, the max size we can accept
+DEFAULT_CONTENT_LENGTH = {{ onadata_odk_content_length }}
+
+if {{ onadata_read_only_mode }}:
+    SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+    CHECK_EXPIRED_TEMP_TOKEN = not {{ onadata_read_only_mode }}
+    DEFAULT_SESSION_EXPIRY_TIME = 315360003153600031536000
+    DEFAULT_TEMP_TOKEN_EXPIRY_TIME = 315360003153600031536000
+
+CUSTOM_MAIN_URLS = set()
+
+if {{ onadata_include_pricing }}:
+    INSTALLED_APPS = ("pricing",) + INSTALLED_APPS
+    DEACTIVATE_ON_LIMIT_EXCEEDED = False
+    PRICING = True
+    PRICING_LIMIT_ENABLED = True
+    PRICING_API_LIMIT_ENABLED = False
+    PRICING_NO_ACCOUNT_BEHAVIOUR = "default"  # unlimited or default
+    PRICING_COUNT_API_CALLS = not {{ onadata_read_only_mode }}
+    ADDITIONAL_API_USAGE_PERCENTAGE = 10
+    MONTHLY_SUBMISSIONS_EXTRA = 50
+    MONTHLY_SUBMISSIONS_CACHE_TIMEOUT = 60 * 60 * 24
+    PROFILE_SERIALIZER = "pricing.serializer.PersonalAccountSerializer"
+    ORG_PROFILE_SERIALIZER = "pricing.serializer.OrganizationAccountSerializer"
+    BASE_VIEWSET = "pricing.baseviewset.DefaultBaseViewset"
+    ZOHO_AUTH_TOKEN = "{{ onadata_zoho_auth_token }}"
+    ZOHO_API_TOKEN = "{{ onadata_zoho_api_token }}"
+    ZOHO_ORG_ID = "{{ onadata_zoho_org_id }}"
+    ZOHO_API_URL = "{{ onadata_zoho_api_url }}"
+    CUSTOM_MAIN_URLS.add('pricing.urls')
+
+if {{ onadata_enable_email_verification }}:
+    ENABLE_EMAIL_VERIFICATION = True
+    VERIFIED_KEY_TEXT = "{{ onadata_verified_key_text }}"
+    VERIFICATION_URL = "{{ onadata_verification_url }}"
+
+GOOGLE_STEP2_URI = "https://{{ onadata_domain }}/gwelcome"
+GOOGLE_OAUTH2_CLIENT_ID = "{{ onadata_google_client_id }}"
+GOOGLE_OAUTH2_CLIENT_SECRET = "{{ onadata_google_client_secret }}"
+GOOGLE_CLIENT_EMAIL = "{{ onadata_google_client_email }}"
+
+TAGGIT_CASE_INSENSITIVE = False
+STREAM_DATA = True
+
+{% if onadata_cache_backend == 'memcache' %}
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': "{{ onadata_memcache_uri }}",
+    }
+}
+{% elif onadata_cache_backend == 'redis' %}
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': "{{ onadata_redis_url }}",
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient'
+        },
+        'KEY_PREFIX': 'onadata'
+    }
+}
+{% endif %}
+
+{% if onadata_include_google_export %}
+INSTALLED_APPS = ("google_export",) + INSTALLED_APPS
+GOOGLE_EXPORT = True
+REST_SERVICES_TO_MODULES = {
+    'google_sheets': 'google_export.service'
+}
+REST_SERVICES_TO_SERIALIZERS = {
+    'google_sheets': 'google_export.serializer.GoogleSheetsSerializer'
+}
+CUSTOM_MAIN_URLS.add('google_export.urls')
+{% endif %}
+
+{% if onadata_include_tableau %}
+INSTALLED_APPS = ("connector",) + INSTALLED_APPS
+CUSTOM_MAIN_URLS.add('connector.urls')
+{% endif %}
+
+MIDDLEWARE = (
+    {% if onadata_pgsql_replicas.length() > 0 %}
+    'multidb.middleware.PinningRouterMiddleware',
+    {% endif %}
+    'django.middleware.http.ConditionalGetMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'onadata.libs.utils.middleware.LocaleMiddlewareWithTweaks',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'onadata.libs.utils.middleware.HTTPResponseNotAllowedMiddleware',
+    'onadata.libs.utils.middleware.OperationalErrorMiddleware',
+)
+{% if onadata_sentry_dsn.length() > 0 %}
+from raven.transport.requests import RequestsHTTPTransport
+RAVEN_CONFIG = {
+    'dsn': '{{ onadata_sentry_dsn }}',
+    'release': '{{ onadata_version }}',
+    'transport': RequestsHTTPTransport
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s' +
+                      ' %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+        'profiler': {
+            'format': '%(levelname)s %(asctime)s %(message)s'
+        },
+        'sql': {
+            'format': '%(levelname)s %(process)d %(thread)d' +
+                      ' %(time)s seconds %(message)s %(sql)s'
+        },
+        'sql_totals': {
+            'format': '%(levelname)s %(process)d %(thread)d %(time)s seconds' +
+                      ' %(message)s %(num_queries)s sql queries'
+        }
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        },
+        # Define filter for suspicious urls
+        'skip_suspicious_operations': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': skip_suspicious_operations,
+        },
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false', 'skip_suspicious_operations'],
+            'class': 'django.utils.log.AdminEmailHandler',
+            'email_backend': '{{ onadata_mail_admins_email_backend }}'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+            'stream': sys.stdout
+        },
+        'audit': {
+            'level': 'DEBUG',
+            'class': 'onadata.libs.utils.log.AuditLogHandler',
+            'formatter': 'verbose',
+            'model': 'onadata.apps.main.models.audit.AuditLog'
+        },
+        'sentry': {
+            'level': 'ERROR', # To capture more than ERROR, change to WARNING, INFO, etc.
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+            'tags': {'environment': 'stage'},
+        }
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'console_logger': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        'audit_logger': {
+            'handlers': ['audit'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        'raven': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'sentry.errors': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        }
+    }
+}
+{% endif %}
+
+EXTRA_COLUMNS = ['_xform_id']
+VERIFY_SSL = {{ onadata_verify_ssl }}
+REQUIRE_ODK_AUTHENTICATION = {{ onadata_odk_authentication }}
+
+SUPPORTED_MEDIA_UPLOAD_TYPES = [
+    'audio/mp3',
+    'audio/mpeg',
+    'audio/wav',
+    'audio/x-m4a',
+    'image/jpeg',
+    'image/png',
+    'image/svg+xml',
+    'text/csv',
+    'text/json',
+    'video/3gpp',
+    'video/mp4',
+    'application/json',
+    'application/pdf',
+    'application/msword',
+    'application/vnd.ms-excel',
+    'application/vnd.ms-powerpoint',
+    'application/vnd.oasis.opendocument.text',
+    'application/vnd.oasis.opendocument.spreadsheet',
+    'application/vnd.oasis.opendocument.presentation',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.openxmlformats-officedocument.presentationml.\
+     presentation',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/zip',
+
+]
+
+
+{% if onadata_enable_mqtt %}
+NOTIFICATION_BACKENDS = {
+    'mqtt': {
+        'BACKEND': 'onadata.apps.messaging.backends.mqtt.MQTTBackend',
+        'OPTIONS': {
+            'HOST': "{{ onadata_mqtt_broker_host }}",
+            'PORT': {{ onadata_mqtt_broker_port }},
+            'QOS': {{ onadata_mqtt_qos }},
+            'RETAIN': {{ onadata_mqtt_retain }},
+            'TOPIC_BASE': "{{ onadata_mqtt_topic_base }}",
+            'SECURE': {{ onadata_mqtt_secure }},
+            'CA_CERT_FILE': "{{ onadata_mqtt_tls_directory }}/{{ onadata_mqtt_ca_cert_filename }}",
+            'CERT_FILE': "{{ onadata_mqtt_tls_directory }}/{{ onadata_mqtt_client_cert_filename }}",
+            'KEY_FILE': "{{ onadata_mqtt_tls_directory }}/{{ onadata_mqtt_client_key_filename }}"
+        }
+    },
+}
+MESSAGING_ASYNC_NOTIFICATION = True
+{% endif %}
+EXPORT_TASK_PROGRESS_UPDATE_BATCH = 100
+ZIP_EXPORT_COUNTDOWN = {{ onadata_zip_export_countdown }}
+
+# Time in minutes to lock out user from account
+LOCKOUT_TIME = 30 * 60
+MAX_LOGIN_ATTEMPTS = 10
+SUPPORT_EMAIL = "support@ona.io"
+
+OPENID_CONNECT_PROVIDERS = {
+{% for provider_name,provider_details in onadata_openid_providers.items() %}
+    '{{ provider_name }}': {
+{% for cur_prop_name,cur_prop_value in provider_details.items() %}
+{% if cur_prop_value is mapping %}
+            '{{ cur_prop_name }}': {{ cur_prop_value }},
+{% else %}
+            '{{ cur_prop_name }}': '{{ cur_prop_value }}',
+{% endif %}
+{% endfor %}
+    },
+{% endfor %}
+}
+
+{% if onadata_odk_token_fernet_key.length() > 0 %}
+# ODK Token Settings
+ODK_KEY_LIFETIME = {{ onadata_odk_key_lifetime }}
+ODK_TOKEN_LENGTH = {{ onadata_odk_token_length }}
+# ODK_TOKEN_FERNET_KEY needs to be URL friendly
+ODK_TOKEN_FERNET_KEY = '{{ onadata_odk_token_fernet_key }}'
+{% endif %}
+ORG_ON_CREATE_IS_ACTIVE = {{ onadata_org_on_create_is_active }}

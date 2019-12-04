@@ -1,0 +1,215 @@
+---
+onadata_system_user: "onadata"
+onadata_system_group: "{{ onadata_system_user }}"
+onadata_system_user_home: "/home/{{ onadata_system_user }}"
+onadata_system_wide_dependencies:
+  - "{{ onadata_postgis_package }}"
+  - binutils
+  - libproj-dev
+  - gdal-bin
+  - memcached
+  - libmemcached-dev
+  - build-essential
+  - python-pip
+  - virtualenv
+  - git
+  - libssl-dev
+  - libpq-dev
+  - gfortran
+  - libatlas-base-dev
+  - libjpeg-dev
+  - libxml2-dev
+  - libxslt1-dev
+  - zlib1g-dev
+  - software-properties-common
+  - ghostscript
+  - python-celery
+  - python-sphinx
+  - pkg-config
+  - gcc
+  - automake
+  - libtool
+onadata_pip_packages:
+  - uwsgi
+  - django-redis
+  - numpy
+  - django-db-readonly
+onadata_pip_paths:
+  - "{{ onadata_checkout_path }}/requirements/base.pip"
+  - "{{ onadata_checkout_path }}/requirements/ses.pip"
+  - "{{ onadata_checkout_path }}/requirements/s3.pip"
+onadata_postgis_package: "postgresql-9.6-postgis-2.5"
+onadata_python_source_version: "3.6"
+onadata_python_version: "python{{ onadata_python_source_version }}"
+onadata_version: "v2.0.11"
+onadata_git_url: "https://github.com/onaio/onadata.git"
+onadata_custom_template_git_url: "https://github.com/onaio/onadata-template.git"
+onadata_git_key:
+onadata_git_key_filename: "id_ed25519"
+onadata_custom_template_version: "master"
+onadata_service_name: "{{ onadata_system_user }}"
+onadata_codebase_path: "{{ onadata_system_user_home }}/app"
+onadata_versioned_path: "{{ onadata_codebase_path }}-versioned"
+onadata_checkout_path: "{{ onadata_versioned_path }}/{{ onadata_version }}"
+onadata_venv_path: "{{ onadata_sytem_user_home }}/.virtualenvs/{{ onadata_service_name }}"
+onadata_log_path: "/var/log/{{ onadata_service_name }}"
+onadata_recreate_virtual_env: false
+onadata_local_settings_path: "{{ onadata_checkout_path }}/onadata/preset/local_settings.py"
+onadata_settings_template_path: "onadata_checkout_path/onadata/preset/local_settings.py.j2"
+onadata_init_commands:
+  - "migrate --noinput"
+  - "collectstatic --noinput"
+onadata_static_path: "{{ onadata_checkout_path }}/onadata/static/"
+onadata_media_path: "{{ onadata_system_user_home }}/media"
+onadata_media_path_mode: "0755"
+onadata_settings_module: "onadata.preset.local_settings"
+onadata_wsgi_module: "onadata.apps.main.wsgi:application"
+onadata_celery_app: "onadata.celery"
+onadata_domain: "api.ona.io"
+onadata_celeryd_nodes: "{{ onadata_domain }} export-node publish-xls-form-node google-export xls-exports csv-exports kml-exports osm-exports csv-zip-exports sav-zip-exports external-exports zip-exports osm-exports exports"
+onadata_celeryd_opts: "-O fair --concurrency=8 --autoscale=6,1 -Q:{{ nginx_server_name }} celery -Q:export-node exports -Q:publish-xls-form-node publish_xlsform -Q:google-export google_export -Q:xls-exports xls_exports -Q:csv-exports csv_exports -Q:kml-exports kml_exports -Q:osm-exports osm-exports -Q:csv-zip-exports csv_zip_exports -Q:sav-zip-exports sav_zip_exports -Q:external-exports external_exports -Q:zip-exports zip_exports -Q:osm-exports osm_exports -Q:exports exports"
+onadata_django_env:
+  CPLUS_INCLUDE_PATH: "/usr/include/gdal"
+  C_INCLUDE_PATH: "/usr/include/gdal"
+# Whether to run tasks such as those to restart the services
+onadata_manage_services: true
+onadata_apt_python_ppa: ""
+onadata_celerybeat_extra_env_vars: []
+onadata_celeryd_extra_env_vars: []
+onadata_pgsql_db: "onadata"
+onadata_pgsql_user: "onadata"
+onadata_pgsql_password:
+onadata_pgsql_host: "127.0.0.1"
+onadata_pgsql_port: 5432
+onadata_disable_server_side_cursors: "False"
+onadata_pgsql_replicas:
+  - id: "replica1"
+    name: "{{ onadata_pgsql_db }}"
+    user: "{{ onadata_pgsql_user }}"
+    password: "{{ onadata_pgsql_password }}"
+    conn_max_age: 120
+    host: "{{ onadata_pgsql_host }}"
+    port: "{{ onadata_pgsql_port }}"
+onadata_kpi_formbuilder_url: "https://forms.{{ onadata_domain }}"
+onadata_django_secret_key:
+onadata_rabbitmq_user: onadata
+onadata_rabbitmq_password:
+onadata_rabbitmq_host: 127.0.0.1
+onadata_rabbitmq_port: 5672
+onadata_celery_broker_url: "amqp://{{ onadata_rabbitmq_user }}:{{ onadata_rabbitmq_password }}@{{ onadata_rabbitmq_host }}:{{ onadata_rabbitmq_port }}/"
+onadata_celery_result_backend: "cache+memcached://{{ onadata_memcache_uri }}"
+# Which backend to use for caching. Supported values are:
+#  - memcache
+#  - redis
+onadata_cache_backend: "memcache"
+onadata_memcache_uri: "127.0.0.1:11211"
+onadata_redis_url: "redis://127.0.0.1:6379/7"
+onadata_aws_access_key:
+onadata_aws_secret_key:
+onadata_smtp_host:
+onadata_smtp_port:
+onadata_smtp_login:
+onadata_smtp_password:
+onadata_smtp_use_tls: "True"
+onadata_smtp_from: "noreply@example.com"
+# Whether Ona Data is to use AWS's services such as S3 
+onadata_use_aws: false
+onadata_s3_bucket: "{{ onadata_domain | replace('.', '-') }}-onadata"
+onadata_s3_region: "eu-west-1"
+onadata_email_admins:
+  - name: "Admin"
+    email: "admin@example.com"
+# Whether to run Ona Data in debug mode
+onadata_debug: "False"
+onadata_cors_origin_whitelist: []
+onadata_cors_origin_regex_whitelist: []
+onadata_google_site_verification:
+onadata_google_analytics_property_id:
+# Whether to run Ona Data in read-only mode (no writes to database)
+onadata_read_only_mode: "False"
+onadata_jwt_secret_key:
+onadata_enketo_auth_cookie_domain: ".example.com"
+onadata_enketo_login_url: "https://{{ onadata_domain }}/login"
+onadata_enketo_url: "https://enketo.{{ onadata_domain }}"
+onadata_enketo_api_salt:
+onadata_enketo_api_token:
+# Whether Enketo is configured to work offline
+onadata_enketo_offline: "True"
+onadata_enketo_auth_cookie: "__enketo"
+onadata_enketo_meta_uid_cookie: "__enketo_meta_uid"
+# The schedule for the Celery Beat task that marks export tasks as expired
+onadata_celery_beat_mark_exports_expired_schedule: "crontab(hour='*', minute='0')"
+# The schedule for the Celery Beat task that deletes export tasks that have been marked as expired
+onadata_celery_beat_delete_expired_exports_schedule: "crontab(hour='*', minute='10')"
+# The schedule for running the celery.backend_cleanup task (responsible for cleaning expired task results)
+# see http://docs.celeryproject.org/en/master/userguide/configuration.html#std:setting-result_expires
+onadata_celery_backend_cleanup_schedule: "crontab(hour='*', minute='30')"
+onadata_celery_task_result_expires: 3600
+# Cache control maximum age in seconds
+onadata_cache_control_max_age: 30
+# ODK attachment maximum size acceptable in bytes
+onadata_odk_content_length: 100000000
+onadata_mail_admins_email_backend: "django.core.mail.backends.dummy.EmailBackend"
+onadata_verify_ssl: "True"
+# Whether to require ODK authentication
+onadata_odk_authentication: "True"
+# Number of exports to wait for a zip export
+onadata_zip_export_countdown: 43200
+onadata_org_on_create_is_active: "True"
+
+# Pricing library
+onadata_include_pricing: "False"
+onadata_pricing_version: "v0.8.0"
+onadata_zoho_auth_token:
+onadata_zoho_api_token:
+onadata_zoho_org_id:
+onadata_zoho_api_url: "https://subscriptions.zoho.com/api/v1"
+
+# Email Verification
+onadata_enable_email_verification: "True"
+onadata_verified_key_text: "ALREADY_ACTIVATED"
+onadata_verification_url: "https://{{ onadata_domain }}/email-verification-confirmation"
+
+# Google Integrations (exports)
+onadata_include_google_export: "False"
+onadata_google_client_id:
+onadata_google_client_secret:
+onadata_google_client_email: "google-integration@{{ onadata_domain|replace('.', '-') }}.iam.gserviceaccount.com"
+onadata_google_export_version: "v0.7.0"
+
+# Tableau Support
+onadata_include_tableau: "False"
+
+# Sentry Support
+onadata_sentry_dsn:
+
+# MQTT Support
+onadata_enable_mqtt: false
+onadata_mqtt_broker_host: "127.0.0.1"
+onadata_mqtt_broker_port: 8883
+onadata_mqtt_qos: 2
+onadata_mqtt_retain: "False"
+onadata_mqtt_topic_base: "{{ onadata_service_name }}"
+onadata_mqtt_secure: "True"
+onadata_mqtt_tls_directory: "/etc/ssl/certs/mqtt"
+onadata_mqtt_ca_cert_filename: "{{ onadata_service_name }}-ca-cert.pem"
+onadata_mqtt_ca_key_filename: "{{ onadata_service_name }}-ca-key.pem"
+onadata_mqtt_client_cert_filename: "{{ onadata_service_name }}-cert.pem"
+onadata_mqtt_client_key_filename: "{{ onadata_service_name }}-key.pem"
+onadata_mqtt_client_csr_filename: "{{ onadata_service_name }}-csr.pem"
+onadata_mqtt_client_cert_expiry_days: 3650
+onadata_mqtt_client_cert_attributes: "/O=Example Org/CN={{ onadata_domain }}"
+onadata_mqtt_ca_key: ""
+onadata_mqtt_ca_cert: ""
+
+# OpenID Support
+onadata_openid_providers: {}
+
+# Temporary User API Keys
+# Generate fernet key using:
+#  dd if=/dev/urandom bs=32 count=1 2>/dev/null | openssl base64
+onadata_odk_token_fernet_key: ""
+# Key's lifetime in days
+onadata_odk_key_lifetime: 10
+# Length of the generated user key
+onadata_odk_token_length: 7

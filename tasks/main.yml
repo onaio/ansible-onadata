@@ -1,0 +1,5 @@
+---
+- name: Install extras
+  include_tasks: install.yml
+  tags:
+    - install
