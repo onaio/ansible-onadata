@@ -1,0 +1,12 @@
+---
+example_postgresql_host: "10.0.0.5"
+example_ancillary_host: "10.0.0.2"
+example_api_host_0: "10.0.0.3"
+example_api_host_1: "10.0.0.4"
+
+postgresql_onadata_db: "onadata"
+postgresql_onadata_user: "onadata"
+postgresql_onadata_password: "somesecret"
+
+rabbitmq_admin_user: "admin"
+rabbitmq_admin_password: "somesecret"

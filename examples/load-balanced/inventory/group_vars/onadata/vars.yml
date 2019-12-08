@@ -1,0 +1,90 @@
+---
+# Onadata General
+onadata_django_secret_key: "somesecret"
+onadata_version: "v2.0.11"
+onadata_domain: "example.com"
+onadata_email_admins:
+  - name: "Ona Data"
+    email: "admin@example.com"
+onadata_support_email: "support@example.com"
+onadata_static_path: "{{ onadata_checkout_path }}/onadata/static/"
+onadata_codebase_path: "{{ onadata_system_user_home }}/app"
+onadata_versioned_path: "{{ onadata_codebase_path }}-versioned"
+onadata_checkout_path: "{{ onadata_versioned_path }}/{{ onadata_version }}"
+onadata_system_user_home: "/home/{{ onadata_system_user }}"
+onadata_media_path: "{{ onadata_system_user_home }}/media"
+onadata_system_user: "onadata"
+onadata_wsgi_bind_port: 9000
+
+# Onadata PostgreSQL
+onadata_pgsql_host: "{{ example_postgresql_host }}"
+onadata_pgsql_db: "{{ postgresql_onadata_db }}"
+onadata_pgsql_user: "{{ postgresql_onadata_user }}"
+onadata_pgsql_password: "{{ postgresql_onadata_password }}"
+
+# Onadata RabbitMQ
+onadata_rabbitmq_user: "{{ rabbitmq_admin_user }}"
+onadata_rabbitmq_password: "{{ rabbitmq_admin_password }}"
+onadata_rabbitmq_host: "{{ example_ancillary_host }}"
+
+# Onadata Memcached
+onadata_memcached_uri: "{{ example_ancillary_host }}:11211"
+
+# NGINX
+nginx_install_method: "package"
+nginx_site_names:
+ - "{{ onadata_domain }}"
+nginx_http_site_name: "{{ onadata_domain }}-http"
+nginx_https_site_name: "{{ onadata_domain }}-https"
+nginx_enabled_sites:
+  - "{{ nginx_http_site_name }}"
+  - "{{ nginx_https_site_name }}"
+nginx_ssl_cert: "fullchain.pem"
+nginx_ssl_key: "key.pem"
+nginx_ssl_src_dir: "files/ssl/example.com"
+nginx_ssl_dir: "{{ nginx_dir }}/ssl/{{ onadata_domain }}"
+nginx_proxy_read_timeout: "300s"
+nginx_client_max_body_size: "100M"
+nginx_sites:
+  - server:
+      name: "{{ nginx_http_site_name }}"
+      __listen: "80;\n  listen [::]:80;\n"
+      server_name: "{{ nginx_site_names|join(' ') }}"
+      return: "301 https://$server_name$request_uri"
+      ssl:
+        enabled: false
+  - server:
+      name: "{{ nginx_https_site_name }}"
+      __listen: "443;\n  listen [::]:443;\n"
+      server_name: "{{ nginx_site_names|join(' ') }}"
+      client_max_body_size: "{{ nginx_client_max_body_size }}"
+      ssl:
+        enabled: true
+        cert: "{{ nginx_ssl_cert }}"
+        key: "{{ nginx_ssl_key }}"
+        src_dir: "{{ nginx_ssl_src_dir }}"
+        conf: "{{ onadata_domain }}-ssl.conf"
+        remote_src: false
+      location1:
+        name: "/static"
+        alias: "{{ onadata_static_path }}"
+      location2:
+        name: "/"
+        proxy_pass: "http://{{ nginx_onadata_loadbalancer_name }}"
+        proxy_read_timeout: "{{ nginx_proxy_read_timeout }}"
+        proxy_redirect: "off"
+        proxy_set_header:
+          - Host $host
+          - X-Real-IP $remote_addr
+          - X-Forwarded-For $proxy_add_x_forwarded_for
+          - X-Forwarded-Host $server_name
+          - X-Forwarded-Proto https
+        proxy_next_upstream: "error timeout invalid_header http_500 http_502 http_503 http_504"
+nginx_onadata_loadbalancer_name: onadata
+nginx_loadbalancers:
+  - upstream_name: "{{ nginx_onadata_loadbalancer_name }}"
+    method: least_conn
+    hosts:
+      - "{{ example_api_host_0 }}:{{ onadata_wsgi_bind_port }}"
+      - "{{ example_api_host_1 }}:{{ onadata_wsgi_bind_port }}"
+nginx_default_enable: false

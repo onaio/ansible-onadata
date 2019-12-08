@@ -1,0 +1,10 @@
+---
+- hosts: memcached
+  gather_facts: False
+  pre_tasks:
+    - include_tasks: tasks/python3-ubuntu.yml
+    - name: Setup Ansible
+      setup:
+  roles:
+    - role: geerlingguy.memcached
+      become: true

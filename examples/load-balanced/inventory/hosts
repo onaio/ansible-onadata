@@ -1,0 +1,12 @@
+[postgresql]
+postgres-host
+
+[onadata]
+api-host0
+api-host1
+
+[memcached]
+ancillary-host
+
+[rabbitmq]
+ancillary-host

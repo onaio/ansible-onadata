@@ -1,0 +1,10 @@
+---
+- hosts: postgresql
+  gather_facts: False
+  pre_tasks:
+    - include_tasks: tasks/python3-ubuntu.yml
+    - name: Setup Ansible
+      setup:
+  roles:
+    - role: onaio.postgresql
+      become: true

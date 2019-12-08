@@ -1,0 +1,2 @@
+---
+memcached_listen_ip: "{{ example_ancillary_host }}"

@@ -1,0 +1,35 @@
+---
+- src: https://github.com/onaio/ansible-django.git
+  name: onaio.django
+  scm: git
+  version: ff6ca75f0a55bb600d3d4ced3e803a2141f498ae
+
+- src: https://github.com/onaio/ansible-ssl-certificate.git
+  name: onaio.ssl-certificate
+  scm: git
+
+- src: https://github.com/onaio/ansible-nginx.git
+  name: onaio.nginx
+  scm: git
+
+- src: https://github.com/onaio/ansible-gpg-import.git
+  name: onaio.gpg-import
+  scm: git
+
+- src: https://github.com/onaio/ansible-postgresql.git
+  name: onaio.postgresql
+  scm: git
+
+- src: https://github.com/onaio/ansible-onadata.git
+  name: onaio.onadata
+  scm: git
+
+- src: git+https://github.com/onaio/ansible-rabbitmq.git
+  name: onaio.rabbitmq
+  scm: git
+
+- src: geerlingguy.memcached
+
+- src: kbrebanov.erlang
+
+- src: Stouts.backup

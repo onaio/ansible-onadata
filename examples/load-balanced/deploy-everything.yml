@@ -1,0 +1,14 @@
+---
+- import_playbook: postgresql.yml
+  tags:
+    - postgresql
+    - postgres
+- import_playbook: rabbitmq.yml
+  tags:
+    - rabbitmq
+- import_playbook: memcached.yml
+  tags:
+    - memcached
+- import_playbook: onadata.yml
+  tags:
+    - onadata

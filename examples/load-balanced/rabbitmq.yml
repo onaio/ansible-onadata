@@ -1,0 +1,12 @@
+---
+- hosts: rabbitmq
+  gather_facts: False
+  pre_tasks:
+    - include_tasks: tasks/python3-ubuntu.yml
+    - name: Setup Ansible
+      setup:
+  roles:
+    - role: kbrebanov.erlang
+      become: true
+    - role: onaio.rabbitmq
+      become: true

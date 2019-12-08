@@ -1,0 +1,15 @@
+---
+rabbitmq_users:
+  - user: "{{ rabbitmq_admin_user }}"
+    password: "{{ rabbitmq_admin_password }}"
+    vhost: /
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    tags: administrator
+rabbitmq_plugins:
+  - rabbitmq_management
+  - rabbitmq_top
+rabbitmq_ulimit_open_files: "60000"
+
+erlang_version: 20.3

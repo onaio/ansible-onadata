@@ -1,0 +1,14 @@
+---
+- hosts: onadata
+  gather_facts: False
+  serial: 1 # Runs playbook one server at at time (to achieve a rolling update)
+  max_fail_percentage: 0
+  pre_tasks:
+    - include_tasks: tasks/python3-ubuntu.yml
+    - name: Setup Ansible
+      setup:
+  roles:
+    - role: onaio.onadata
+      become: true
+    - role: onaio.nginx
+      become: true

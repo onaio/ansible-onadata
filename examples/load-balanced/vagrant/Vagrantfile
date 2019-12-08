@@ -1,0 +1,23 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = 'ubuntu/bionic64'
+
+  config.vm.provision "shell", inline: "echo Granting generated SSH key to ubuntu user"
+  config.vm.provision "file", source: "~/.ssh/id_ed25519.pub", destination: "/tmp/ubuntu_authorized_keys"
+  config.vm.provision "shell", inline: "sudo tee -a /home/ubuntu/.ssh/authorized_keys < /tmp/ubuntu_authorized_keys"
+  config.vm.provision "shell", inline: "sudo chown ubuntu:ubuntu /home/ubuntu/.ssh/authorized_keys"
+
+  config.vm.provision "shell", inline: "echo Copying over ubuntu sudoers.d config file"
+  config.vm.provision "file", source: "assets/etc/sudoers.d/ubuntu", destination: "/tmp/ubuntu_sudoers"
+  config.vm.provision "shell", inline: "sudo mv /tmp/ubuntu_sudoers /etc/sudoers.d/ubuntu"
+  config.vm.provision "shell", inline: "sudo chown root:root /etc/sudoers.d/ubuntu"
+
+  config.vm.provider :virtualbox do |vb|
+    vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+  end
+end
+
+vagrantFiles = Dir.glob("hosts/*.rb")
+vagrantFiles.each do |curFile|
+  load File.expand_path(curFile) if File.exists?(curFile)
+end

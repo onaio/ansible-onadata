@@ -1,0 +1,41 @@
+---
+# PostgreSQL General
+postgresql_version: 9.6
+postgresql_users:
+  - name: "{{ postgresql_onadata_user }}"
+    pass: "{{ postgresql_onadata_password }}"
+    encrypted: true
+postgresql_databases:
+  - name: "{{ postgresql_onadata_db }}"
+    owner: "{{ postgresql_onadata_user }}"
+    encoding: "UTF-8"
+    hstore: true
+    gis: true
+postgresql_database_extensions:
+  - db: "{{ postgresql_onadata_db }}"
+    extensions:
+      - postgis
+postgresql_ext_install_postgis: true
+postgresql_listen_addresses:
+  - "localhost"
+  - "{{ example_postgresql_host }}"
+postgresql_pg_hba_md5_hosts:
+  - "{{ example_postgresql_host }}/32"
+  - "{{ example_api_host_0 }}/32"
+  - "{{ example_api_host_1 }}/32"
+postgresql_ext_postgis_version: "2.5"
+postgresql_ext_postgis_deps:
+  - libgeos-c1v5
+  - "postgresql-{{ postgresql_version }}-postgis-{{ postgresql_ext_postgis_version }}"
+  - "postgresql-{{ postgresql_version }}-postgis-{{ postgresql_ext_postgis_version }}-scripts"
+
+# PostgreSQL Backup
+postgresql_backup_system_user: "root"
+postgresql_backup_system_group: "root"
+postgresql_backup_database: "{{ postgresql_onadata_db }}"
+postgresql_backup_gpg_private_key: "files/pgp/{{ postgresql_backup_gpg_key_id }}/priv.asc"
+postgresql_backup_gpg_public_key: "files/pgp/{{ postgresql_backup_gpg_key_id }}/pub.asc"
+postgresql_backup_gpg_trust_file: "files/pgp/{{ postgresql_backup_gpg_key_id }}/ultimate.trust"
+postgresql_backup_gpg_key_id: "EDD7FC0D"
+postgresql_backup_gpg_pass: "somesecret"
+postgresql_backup_target_path: "/backups/postgresql"
