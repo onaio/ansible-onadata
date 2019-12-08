@@ -10,7 +10,7 @@ Ona Data requires the following services to be set up (not handled by this role)
   - PostgreSQL 9.6
   - RabbitMQ (if Celery broker set to RabbitMQ)
   - Redis (if Celery results backend or caching set to Redis)
-  - Memcache (if Celery results backend or caching set to Memcache)
+  - Memcached (if Celery results backend or caching set to Memcached)
   - An MQTT Broker (if MQTT support is enabled). EMQTT recommended
 
 Role Variables

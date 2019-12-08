@@ -3,13 +3,14 @@ onadata_system_user: "onadata"
 onadata_system_group: "{{ onadata_system_user }}"
 onadata_system_user_home: "/home/{{ onadata_system_user }}"
 onadata_system_wide_dependencies:
-  - "{{ onadata_postgis_package }}"
   - binutils
   - libproj-dev
   - gdal-bin
   - memcached
   - libmemcached-dev
   - build-essential
+  - "{{ onadata_python_version }}"
+  - "{{ onadata_python_version }}-dev"
   - python-pip
   - virtualenv
   - git
@@ -38,7 +39,6 @@ onadata_pip_paths:
   - "{{ onadata_checkout_path }}/requirements/base.pip"
   - "{{ onadata_checkout_path }}/requirements/ses.pip"
   - "{{ onadata_checkout_path }}/requirements/s3.pip"
-onadata_postgis_package: "postgresql-9.6-postgis-2.5"
 onadata_python_source_version: "3.6"
 onadata_python_version: "python{{ onadata_python_source_version }}"
 onadata_version: "v2.0.11"
@@ -51,26 +51,28 @@ onadata_service_name: "{{ onadata_system_user }}"
 onadata_codebase_path: "{{ onadata_system_user_home }}/app"
 onadata_versioned_path: "{{ onadata_codebase_path }}-versioned"
 onadata_checkout_path: "{{ onadata_versioned_path }}/{{ onadata_version }}"
-onadata_venv_path: "{{ onadata_sytem_user_home }}/.virtualenvs/{{ onadata_service_name }}"
+onadata_venv_path: "{{ onadata_system_user_home }}/.virtualenvs/{{ onadata_service_name }}"
 onadata_log_path: "/var/log/{{ onadata_service_name }}"
 onadata_recreate_virtual_env: false
 onadata_local_settings_path: "{{ onadata_checkout_path }}/onadata/preset/local_settings.py"
 onadata_settings_template_path: "onadata_checkout_path/onadata/preset/local_settings.py.j2"
 onadata_init_commands:
-  - "migrate --noinput"
-  - "collectstatic --noinput"
+  - migrate --noinput
+  - collectstatic --noinput
 onadata_static_path: "{{ onadata_checkout_path }}/onadata/static/"
 onadata_media_path: "{{ onadata_system_user_home }}/media"
 onadata_media_path_mode: "0755"
 onadata_settings_module: "onadata.preset.local_settings"
 onadata_wsgi_module: "onadata.apps.main.wsgi:application"
 onadata_celery_app: "onadata.celery"
-onadata_domain: "api.ona.io"
+onadata_domain: "example.com"
 onadata_celeryd_nodes: "{{ onadata_domain }} export-node publish-xls-form-node google-export xls-exports csv-exports kml-exports osm-exports csv-zip-exports sav-zip-exports external-exports zip-exports osm-exports exports"
-onadata_celeryd_opts: "-O fair --concurrency=8 --autoscale=6,1 -Q:{{ nginx_server_name }} celery -Q:export-node exports -Q:publish-xls-form-node publish_xlsform -Q:google-export google_export -Q:xls-exports xls_exports -Q:csv-exports csv_exports -Q:kml-exports kml_exports -Q:osm-exports osm-exports -Q:csv-zip-exports csv_zip_exports -Q:sav-zip-exports sav_zip_exports -Q:external-exports external_exports -Q:zip-exports zip_exports -Q:osm-exports osm_exports -Q:exports exports"
+onadata_celeryd_opts: "-O fair --concurrency=8 --autoscale=6,1 -Q:{{ onadata_domain }} celery -Q:export-node exports -Q:publish-xls-form-node publish_xlsform -Q:google-export google_export -Q:xls-exports xls_exports -Q:csv-exports csv_exports -Q:kml-exports kml_exports -Q:osm-exports osm-exports -Q:csv-zip-exports csv_zip_exports -Q:sav-zip-exports sav_zip_exports -Q:external-exports external_exports -Q:zip-exports zip_exports -Q:osm-exports osm_exports -Q:exports exports"
 onadata_django_env:
   CPLUS_INCLUDE_PATH: "/usr/include/gdal"
   C_INCLUDE_PATH: "/usr/include/gdal"
+  LANG: "en_US.UTF-8"
+  DJANGO_SETTINGS_MODULE: "{{ onadata_settings_module }}"
 # Whether to run tasks such as those to restart the services
 onadata_manage_services: true
 onadata_apt_python_ppa: ""
@@ -83,8 +85,7 @@ onadata_pgsql_host: "127.0.0.1"
 onadata_pgsql_port: 5432
 onadata_disable_server_side_cursors: "False"
 onadata_pgsql_replicas:
-  - id: "replica1"
-    name: "{{ onadata_pgsql_db }}"
+  - name: "{{ onadata_pgsql_db }}"
     user: "{{ onadata_pgsql_user }}"
     password: "{{ onadata_pgsql_password }}"
     conn_max_age: 120
@@ -97,12 +98,12 @@ onadata_rabbitmq_password:
 onadata_rabbitmq_host: 127.0.0.1
 onadata_rabbitmq_port: 5672
 onadata_celery_broker_url: "amqp://{{ onadata_rabbitmq_user }}:{{ onadata_rabbitmq_password }}@{{ onadata_rabbitmq_host }}:{{ onadata_rabbitmq_port }}/"
-onadata_celery_result_backend: "cache+memcached://{{ onadata_memcache_uri }}"
+onadata_celery_result_backend: "cache+memcached://{{ onadata_memcached_uri }}"
 # Which backend to use for caching. Supported values are:
-#  - memcache
+#  - memcached
 #  - redis
-onadata_cache_backend: "memcache"
-onadata_memcache_uri: "127.0.0.1:11211"
+onadata_cache_backend: "memcached"
+onadata_memcached_uri: "127.0.0.1:11211"
 onadata_redis_url: "redis://127.0.0.1:6379/7"
 onadata_aws_access_key:
 onadata_aws_secret_key:
@@ -156,9 +157,13 @@ onadata_odk_authentication: "True"
 # Number of exports to wait for a zip export
 onadata_zip_export_countdown: 43200
 onadata_org_on_create_is_active: "True"
+onadata_support_email: "support@{{ onadata_domain }}"
+# The bind address for the uWSGI application, incase you'd prefer to use
+# http instead of a UNIX socket for communication with the Ona Data service
+onadata_wsgi_http: "localhost:9000"
 
 # Pricing library
-onadata_include_pricing: "False"
+onadata_include_pricing: false
 onadata_pricing_version: "v0.8.0"
 onadata_zoho_auth_token:
 onadata_zoho_api_token:
@@ -166,22 +171,22 @@ onadata_zoho_org_id:
 onadata_zoho_api_url: "https://subscriptions.zoho.com/api/v1"
 
 # Email Verification
-onadata_enable_email_verification: "True"
+onadata_enable_email_verification: "False"
 onadata_verified_key_text: "ALREADY_ACTIVATED"
 onadata_verification_url: "https://{{ onadata_domain }}/email-verification-confirmation"
 
 # Google Integrations (exports)
-onadata_include_google_export: "False"
+onadata_include_google_export: false
 onadata_google_client_id:
 onadata_google_client_secret:
 onadata_google_client_email: "google-integration@{{ onadata_domain|replace('.', '-') }}.iam.gserviceaccount.com"
 onadata_google_export_version: "v0.7.0"
 
 # Tableau Support
-onadata_include_tableau: "False"
+onadata_include_tableau: false
 
 # Sentry Support
-onadata_sentry_dsn:
+onadata_sentry_dsn: ""
 
 # MQTT Support
 onadata_enable_mqtt: false

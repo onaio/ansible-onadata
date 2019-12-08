@@ -1,11 +1,15 @@
 ---
 - name: Install the custom template # noqa 301
+  become: true
+  become_user: "{{ onadata_system_user }}"
   shell: "(git remote add template {{ onadata_custom_template_git_url }} || true) && git fetch template {{ onadata_custom_template_version }} && git reset HEAD onadata/libs/custom_template && rm -rf onadata/libs/custom_template && git read-tree --prefix=onadata/libs/custom_template -u template/{{ onadata_custom_template_version }}" # noqa 204
   args:
     executable: /bin/bash
     chdir: "{{ onadata_checkout_path }}"
 
 - name: Install pricing library
+  become: true
+  become_user: "{{ onadata_system_user }}"
   pip:
     name: "git+git@github.com:onaio/pricing.git@{{ pricing_version }}#egg=pricing"
     virtualenv: "{{ onadata_venv_path }}"
@@ -13,14 +17,49 @@
   when: onadata_include_pricing == "True"
 
 - name: Install google export library
+  become: true
+  become_user: "{{ onadata_system_user }}"
   pip:
     name: "git+git@github.com:onaio/google-export.git@{{ onadata_google_export_version }}#egg=google-export"
     virtualenv: "{{ onadata_venv_path }}"
     extra_args: "-e"
-  when: onadata_include_google_export == "True"
+  when: onadata_include_google_export
 
 - name: Install tableau library
+  become: true
+  become_user: "{{ onadata_system_user }}"
   pip:
     name: "git+https://github.com/onaio/ona-tableau-connector.git#egg=ona-tableau-connector"
     virtualenv: "{{ onadata_venv_path }}"
-  when: onadata_include_tableau == "True"
+  when: onadata_include_tableau
+
+- name: Generate Docs # noqa 301
+  become: true
+  become_user: "{{ onadata_system_user }}"
+  shell: "source {{ onadata_venv_path }}/bin/activate && /usr/bin/make html"
+  args:
+    executable: /bin/bash
+    chdir: "{{ onadata_codebase_path }}/docs"
+  environment:
+    DJANGO_SETTINGS_MODULE: "{{ onadata_settings_module }}"
+
+- name: Run Django init commands
+  become: true
+  become_user: "{{ onadata_system_user }}"
+  django_manage:
+    command: "{{ item }}"
+    app_path: "{{ onadata_codebase_path }}"
+    virtualenv: "{{ onadata_venv_path }}"
+    settings: "{{ onadata_settings_module }}"
+  with_items: "{{ onadata_init_commands }}"
+
+- name: Load pricing account fixture
+  become: true
+  become_user: "{{ onadata_system_user }}"
+  django_manage:
+    command: loaddata
+    app_path: "{{ onadata_codebase_path }}"
+    virtualenv: "{{ onadata_venv_path }}"
+    fixtures: "{{ onadata_venv_path }}/src/pricing/pricing/fixtures/initial_accounts.json"
+    settings: "{{ onadata_settings_module }}"
+  when: onadata_include_pricing

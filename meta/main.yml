@@ -37,7 +37,7 @@ dependencies:
       django_recreate_virtual_env: "{{ onadata_recreate_virtual_env }}"
       django_local_settings_path: "{{ onadata_local_settings_path }}"
       django_settings_template_path: "{{ onadata_settings_template_path }}"
-      django_init_commands: "{{ onadata_init_commands }}"
+      django_init_commands: []
       django_static_path: "{{ onadata_static_path }}"
       django_media_path: "{{ onadata_media_path }}"
       django_media_path_mode: "{{ onadata_media_path_mode }}"
@@ -52,6 +52,7 @@ dependencies:
       django_celeryd_extra_env_vars: "{{ onadata_celeryd_extra_env_vars }}"
       django_git_key: "{{ onadata_git_key }}"
       django_git_key_filename: "{{ onadata_git_key_filename }}"
+      django_wsgi_http: "{{ onadata_wsgi_http }}"
     environment: "{{ onadata_django_env }}"
 
   - role: onaio.ssl-certificate

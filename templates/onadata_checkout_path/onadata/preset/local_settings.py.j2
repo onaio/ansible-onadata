@@ -19,13 +19,13 @@ DATABASES = {
         'PORT': {{ onadata_pgsql_port }},
         'DISABLE_SERVER_SIDE_CURSORS': {{ onadata_disable_server_side_cursors }},
     },
-{% for cur_replica in onadata_pgsql_replicas.items() %}
-    '{{ cur_replica.id }}': {
+{% for cur_replica in onadata_pgsql_replicas %}
+    'replica{{ loop.index }}': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': '{{ cur_replica.name }}',
         'USER': '{{ cur_replica.user }}',
         'PASSWORD': '{{ cur_replica.password }}',
-        'CONN_MAX_AGE': {{ cur_replica.con_max_age }},
+        'CONN_MAX_AGE': {{ cur_replica.conn_max_age }},
         'HOST': '{{ cur_replica.host }}',
         'PORT': {{ cur_replica.port }},
         'DISABLE_SERVER_SIDE_CURSORS': {{ onadata_disable_server_side_cursors }},
@@ -33,13 +33,13 @@ DATABASES = {
 {% endfor %}
 }
 
-SLAVE_DATABASES = [{% for for cur_replica in onadata_pgsql_replicas.items() %}{{ cur_replica.id }},{% endfor %}]
-{% if onadata_pgsql_replicas.length() > 0 %}
+SLAVE_DATABASES = [{% for cur_replica in onadata_pgsql_replicas %}'replica{{ loop.index }}',{% endfor %}]
+{% if onadata_pgsql_replicas | length > 0 %}
 DATABASE_ROUTERS = ['multidb.PinningMasterSlaveRouter']
 MULTIDB_PINNING_SECONDS = 10
 {% endif %}
 
-{% if onadata_kpi_formbuilder_url.length() > 0 %}
+{% if onadata_kpi_formbuilder_url | length > 0 %}
 KPI_FORMBUILDER_URL = '{{ onadata_kpi_formbuilder_url }}'
 {% endif %}
 
@@ -274,25 +274,26 @@ if {{ onadata_read_only_mode }}:
 
 CUSTOM_MAIN_URLS = set()
 
-if {{ onadata_include_pricing }}:
-    INSTALLED_APPS = ("pricing",) + INSTALLED_APPS
-    DEACTIVATE_ON_LIMIT_EXCEEDED = False
-    PRICING = True
-    PRICING_LIMIT_ENABLED = True
-    PRICING_API_LIMIT_ENABLED = False
-    PRICING_NO_ACCOUNT_BEHAVIOUR = "default"  # unlimited or default
-    PRICING_COUNT_API_CALLS = not {{ onadata_read_only_mode }}
-    ADDITIONAL_API_USAGE_PERCENTAGE = 10
-    MONTHLY_SUBMISSIONS_EXTRA = 50
-    MONTHLY_SUBMISSIONS_CACHE_TIMEOUT = 60 * 60 * 24
-    PROFILE_SERIALIZER = "pricing.serializer.PersonalAccountSerializer"
-    ORG_PROFILE_SERIALIZER = "pricing.serializer.OrganizationAccountSerializer"
-    BASE_VIEWSET = "pricing.baseviewset.DefaultBaseViewset"
-    ZOHO_AUTH_TOKEN = "{{ onadata_zoho_auth_token }}"
-    ZOHO_API_TOKEN = "{{ onadata_zoho_api_token }}"
-    ZOHO_ORG_ID = "{{ onadata_zoho_org_id }}"
-    ZOHO_API_URL = "{{ onadata_zoho_api_url }}"
-    CUSTOM_MAIN_URLS.add('pricing.urls')
+{% if onadata_include_pricing %}
+INSTALLED_APPS = ("pricing",) + INSTALLED_APPS
+DEACTIVATE_ON_LIMIT_EXCEEDED = False
+PRICING = True
+PRICING_LIMIT_ENABLED = True
+PRICING_API_LIMIT_ENABLED = False
+PRICING_NO_ACCOUNT_BEHAVIOUR = "default"  # unlimited or default
+PRICING_COUNT_API_CALLS = not {{ onadata_read_only_mode }}
+ADDITIONAL_API_USAGE_PERCENTAGE = 10
+MONTHLY_SUBMISSIONS_EXTRA = 50
+MONTHLY_SUBMISSIONS_CACHE_TIMEOUT = 60 * 60 * 24
+PROFILE_SERIALIZER = "pricing.serializer.PersonalAccountSerializer"
+ORG_PROFILE_SERIALIZER = "pricing.serializer.OrganizationAccountSerializer"
+BASE_VIEWSET = "pricing.baseviewset.DefaultBaseViewset"
+ZOHO_AUTH_TOKEN = "{{ onadata_zoho_auth_token }}"
+ZOHO_API_TOKEN = "{{ onadata_zoho_api_token }}"
+ZOHO_ORG_ID = "{{ onadata_zoho_org_id }}"
+ZOHO_API_URL = "{{ onadata_zoho_api_url }}"
+CUSTOM_MAIN_URLS.add('pricing.urls')
+{% endif %}
 
 if {{ onadata_enable_email_verification }}:
     ENABLE_EMAIL_VERIFICATION = True
@@ -307,11 +308,11 @@ GOOGLE_CLIENT_EMAIL = "{{ onadata_google_client_email }}"
 TAGGIT_CASE_INSENSITIVE = False
 STREAM_DATA = True
 
-{% if onadata_cache_backend == 'memcache' %}
+{% if onadata_cache_backend == 'memcached' %}
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': "{{ onadata_memcache_uri }}",
+        'LOCATION': "{{ onadata_memcached_uri }}",
     }
 }
 {% elif onadata_cache_backend == 'redis' %}
@@ -345,7 +346,7 @@ CUSTOM_MAIN_URLS.add('connector.urls')
 {% endif %}
 
 MIDDLEWARE = (
-    {% if onadata_pgsql_replicas.length() > 0 %}
+    {% if onadata_pgsql_replicas | length > 0 %}
     'multidb.middleware.PinningRouterMiddleware',
     {% endif %}
     'django.middleware.http.ConditionalGetMiddleware',
@@ -359,7 +360,7 @@ MIDDLEWARE = (
     'onadata.libs.utils.middleware.HTTPResponseNotAllowedMiddleware',
     'onadata.libs.utils.middleware.OperationalErrorMiddleware',
 )
-{% if onadata_sentry_dsn.length() > 0 %}
+{% if onadata_sentry_dsn | length > 0 %}
 from raven.transport.requests import RequestsHTTPTransport
 RAVEN_CONFIG = {
     'dsn': '{{ onadata_sentry_dsn }}',
@@ -513,7 +514,7 @@ ZIP_EXPORT_COUNTDOWN = {{ onadata_zip_export_countdown }}
 # Time in minutes to lock out user from account
 LOCKOUT_TIME = 30 * 60
 MAX_LOGIN_ATTEMPTS = 10
-SUPPORT_EMAIL = "support@ona.io"
+SUPPORT_EMAIL = "{{ onadata_support_email }}"
 
 OPENID_CONNECT_PROVIDERS = {
 {% for provider_name,provider_details in onadata_openid_providers.items() %}
@@ -529,11 +530,10 @@ OPENID_CONNECT_PROVIDERS = {
 {% endfor %}
 }
 
-{% if onadata_odk_token_fernet_key.length() > 0 %}
 # ODK Token Settings
 ODK_KEY_LIFETIME = {{ onadata_odk_key_lifetime }}
 ODK_TOKEN_LENGTH = {{ onadata_odk_token_length }}
 # ODK_TOKEN_FERNET_KEY needs to be URL friendly
 ODK_TOKEN_FERNET_KEY = '{{ onadata_odk_token_fernet_key }}'
-{% endif %}
+
 ORG_ON_CREATE_IS_ACTIVE = {{ onadata_org_on_create_is_active }}

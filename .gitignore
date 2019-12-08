@@ -9,4 +9,4 @@ Icon
 .vagrant
 test
 *.pyc
-
+*.log
