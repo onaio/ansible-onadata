@@ -30,6 +30,7 @@ onadata_system_wide_dependencies:
   - gcc
   - automake
   - libtool
+  - openjdk-11-jre-headless
 onadata_pip_packages:
   - uwsgi
   - django-redis
@@ -113,7 +114,7 @@ onadata_smtp_login:
 onadata_smtp_password:
 onadata_smtp_use_tls: "True"
 onadata_smtp_from: "noreply@example.com"
-# Whether Ona Data is to use AWS's services such as S3 
+# Whether Ona Data is to use AWS's services such as S3
 onadata_use_aws: false
 onadata_s3_bucket: "{{ onadata_domain | replace('.', '-') }}-onadata"
 onadata_s3_region: "eu-west-1"
