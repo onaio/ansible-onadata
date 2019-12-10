@@ -41,7 +41,7 @@ nginx_enabled_sites:
   - "{{ nginx_https_site_name }}"
 nginx_ssl_cert: "fullchain.pem"
 nginx_ssl_key: "key.pem"
-nginx_ssl_src_dir: "files/ssl/example.com"
+nginx_ssl_src_dir: "files/ssl/{{ onadata_domain }}"
 nginx_ssl_dir: "{{ nginx_dir }}/ssl/{{ onadata_domain }}"
 nginx_proxy_read_timeout: "300s"
 nginx_client_max_body_size: "100M"
