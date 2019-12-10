@@ -85,7 +85,7 @@ onadata_pgsql_host: "127.0.0.1"
 onadata_pgsql_port: 5432
 onadata_disable_server_side_cursors: "False"
 onadata_pgsql_replicas: []
-onadata_kpi_formbuilder_url: "https://forms.{{ onadata_domain }}"
+onadata_kpi_formbuilder_url:
 onadata_django_secret_key:
 onadata_rabbitmq_user: onadata
 onadata_rabbitmq_password:
