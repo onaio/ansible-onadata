@@ -39,7 +39,7 @@ DATABASE_ROUTERS = ['multidb.PinningMasterSlaveRouter']
 MULTIDB_PINNING_SECONDS = 10
 {% endif %}
 
-{% if onadata_kpi_formbuilder_url | length > 0 %}
+{% if onadata_kpi_formbuilder_url and onadata_kpi_formbuilder_url | length > 0 %}
 KPI_FORMBUILDER_URL = '{{ onadata_kpi_formbuilder_url }}'
 {% endif %}
 
