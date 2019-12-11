@@ -30,6 +30,7 @@ onadata_system_wide_dependencies:
   - gcc
   - automake
   - libtool
+  - openjdk-11-jre-headless
 onadata_pip_packages:
   - uwsgi
   - django-redis
