@@ -15,6 +15,9 @@ onadata_system_user_home: "/home/{{ onadata_system_user }}"
 onadata_media_path: "{{ onadata_system_user_home }}/media"
 onadata_system_user: "onadata"
 onadata_wsgi_bind_port: 9000
+onadata_service_name: "{{ onadata_system_user }}"
+onadata_pid_socks_dir: "/var/run/{{ onadata_service_name }}"
+onadata_pid_file: "{{ onadata_pid_socks_dir }}/{{ onadata_service_name }}.pid"
 
 # Onadata PostgreSQL
 onadata_pgsql_host: "{{ example_postgresql_host }}"
@@ -26,6 +29,7 @@ onadata_pgsql_password: "{{ postgresql_onadata_password }}"
 onadata_rabbitmq_user: "{{ rabbitmq_admin_user }}"
 onadata_rabbitmq_password: "{{ rabbitmq_admin_password }}"
 onadata_rabbitmq_host: "{{ example_ancillary_host }}"
+onadata_rabbitmq_port: "{{ rabbitmq_port }}"
 
 # Onadata Memcached
 onadata_memcached_uri: "{{ example_ancillary_host }}:11211"
@@ -88,3 +92,17 @@ nginx_loadbalancers:
       - "{{ example_api_host_0 }}:{{ onadata_wsgi_bind_port }}"
       - "{{ example_api_host_1 }}:{{ onadata_wsgi_bind_port }}"
 nginx_default_enable: false
+
+# Monit
+monit_scripts:
+  - email
+  - email_smtp
+  - monit
+  - nginx
+  - openssh-server
+  - rsyslog
+  - system
+  - uwsgi
+service_name: "{{ onadata_service_name }}"
+pid_file: "{{ onadata_pid_file }}"
+uwsgi_total_memory_limit: "3072"

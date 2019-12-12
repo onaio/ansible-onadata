@@ -8,3 +8,5 @@
   roles:
     - role: onaio.postgresql
       become: true
+    - role: onaio.monit
+      become: true

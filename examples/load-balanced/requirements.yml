@@ -24,8 +24,12 @@
   name: onaio.onadata
   scm: git
 
-- src: git+https://github.com/onaio/ansible-rabbitmq.git
+- src: https://github.com/onaio/ansible-rabbitmq.git
   name: onaio.rabbitmq
+  scm: git
+
+- src: https://github.com/onaio/ansible-monit.git
+  name: onaio.monit
   scm: git
 
 - src: geerlingguy.memcached

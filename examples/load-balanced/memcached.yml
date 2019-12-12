@@ -8,3 +8,5 @@
   roles:
     - role: geerlingguy.memcached
       become: true
+    - role: onaio.monit
+      become: true
