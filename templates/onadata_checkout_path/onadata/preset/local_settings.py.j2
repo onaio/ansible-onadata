@@ -93,7 +93,7 @@ if isinstance(TEMPLATE_OVERRIDE_ROOT_DIR, basestring):
         STATICFILES_DIRS += (
             os.path.join(PROJECT_ROOT, TEMPLATE_OVERRIDE_ROOT_DIR, 'static'),
         )
-
+{% if onadata_smtp_host and onadata_smtp_port and onadata_smtp_login %}
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = '{{ onadata_smtp_host }}'
 EMAIL_PORT = '{{ onadata_smtp_port }}'
@@ -102,6 +102,7 @@ EMAIL_HOST_PASSWORD = '{{ onadata_smtp_password }}'
 EMAIL_USE_TLS = {{ onadata_smtp_use_tls }}
 DEFAULT_FROM_EMAIL = '{{ onadata_smtp_from }}'
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
+{% endif %}
 
 {% if onadata_use_aws %}
 AWS_ACCESS_KEY_ID = '{{ onadata_aws_access_key }}'
