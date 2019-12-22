@@ -184,6 +184,11 @@ example_ancillary_host: "10.0.0.2" # Set to IP address of your ancillary host
 example_api_host_0: "10.0.0.3" # Set to IP address of your first Ona Data host
 example_api_host_1: "10.0.0.4" # Set to IP address of your second Ona Data host
 
+example_postgresql_ssh_host: "{{ example_postgresql_host }}"  # Change to Public IP of PostgreSQL host if not on the same subnet.
+example_ancillary_ssh_host: "{{ example_ancillary_host }}"  # Change to Public IP of ancillary host if not on the same subnet.
+example_api_ssh_host_0: "{{ example_api_host_0 }}"  # Change to Public IP of first Ona Data host if not on the same subnet.
+example_api_ssh_host_1: "{{ example_api_host_1 }}"  # Change to Public IP of second Ona Data host if not on the same subnet.
+
 postgresql_onadata_password: "somesecret" # Change to a stronger passphrase
 
 rabbitmq_admin_password: "somesecret" # Change to a stronger passphrase

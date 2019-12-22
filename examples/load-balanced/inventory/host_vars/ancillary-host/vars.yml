@@ -1,6 +1,6 @@
 ---
 ansible_ssh_user: "ubuntu"
-ansible_ssh_host: "{{ example_ancillary_host }}"
+ansible_ssh_host: "{{ example_ancillary_ssh_host }}"
 
 # RabbitMQ
 rabbitmq_node_name: "rabbit@{{ ansible_hostname }}"
