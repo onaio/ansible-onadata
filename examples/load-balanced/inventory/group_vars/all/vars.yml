@@ -4,6 +4,11 @@ example_ancillary_host: "10.0.0.2"
 example_api_host_0: "10.0.0.3"
 example_api_host_1: "10.0.0.4"
 
+example_postgresql_ssh_host: "{{ example_postgresql_host }}"
+example_ancillary_ssh_host: "{{ example_ancillary_host }}"
+example_api_ssh_host_0: "{{ example_api_host_0 }}"
+example_api_ssh_host_1: "{{ example_api_host_1 }}"
+
 postgresql_onadata_db: "onadata"
 postgresql_onadata_user: "onadata"
 postgresql_onadata_password: "somesecret"
