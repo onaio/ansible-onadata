@@ -156,6 +156,8 @@ onadata_support_email: "support@{{ onadata_domain }}"
 # The bind address for the uWSGI application, incase you'd prefer to use
 # http instead of a UNIX socket for communication with the Ona Data service
 onadata_wsgi_http: "localhost:9000"
+onadata_pid_socks_dir: "/var/run/{{ onadata_service_name }}"
+onadata_pid_file: "{{ onadata_pid_socks_dir }}/{{ onadata_service_name }}.pid"
 
 # Pricing library
 onadata_include_pricing: false

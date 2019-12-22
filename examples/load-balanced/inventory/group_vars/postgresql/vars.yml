@@ -38,3 +38,13 @@ postgresql_backup_gpg_public_key: "files/gpg/{{ postgresql_backup_gpg_key_id }}/
 postgresql_backup_gpg_trust_file: "files/gpg/{{ postgresql_backup_gpg_key_id }}/ultimate.trust"
 postgresql_backup_gpg_key_id: "F73D9AE7"
 postgresql_backup_target_path: "/backups/postgresql"
+
+# Monit
+monit_scripts:
+  - email
+  - email_smtp
+  - monit
+  - openssh-server
+  - rsyslog
+  - system
+  - postgres

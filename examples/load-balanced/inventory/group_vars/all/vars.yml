@@ -10,3 +10,21 @@ postgresql_onadata_password: "somesecret"
 
 rabbitmq_admin_user: "admin"
 rabbitmq_admin_password: "somesecret"
+rabbitmq_port: 5672
+rabbitmq_management_port: 15672
+
+# Remove the "email" and "email_smtp" items from the monit_scripts
+# list in the group and host vars if you don't want to configure
+# email notifications
+monit_email_admins: [{"Admin", "admin@example.com"}]
+no_reply_monit_email: "no-reply@example.com"
+# Remove the "email_smtp" item from the monit_scripts list in the
+# group and host vars if you don't need to configure SMTP to send
+# email notifications
+monit_smtp_server: "127.0.0.1"
+monit_smtp_port: "25"
+monit_smtp_username: "root"
+monit_smtp_password: ""
+monit_setup_mode: true
+monit_version: "1:5.*"
+slack_monit_endpoint: ""

@@ -1,3 +1,20 @@
 ---
 ansible_ssh_user: "ubuntu"
 ansible_ssh_host: "{{ example_ancillary_host }}"
+
+# RabbitMQ
+rabbitmq_node_name: "rabbit@{{ ansible_hostname }}"
+
+# Monit
+monit_scripts:
+  - email
+  - email_smtp
+  - monit
+  - memcached
+  - openssh-server
+  - rsyslog
+  - system
+  - rabbitmq
+monit_rabbitmq_node_name: "{{ rabbitmq_node_name }}"
+monit_rabbitmq_port: "{{ rabbitmq_port }}"
+monit_rabbitmq_management_port: "{{ rabbitmq_management_port }}"

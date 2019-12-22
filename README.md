@@ -3,6 +3,8 @@ Ansible: Onadata [![Build Status](https://travis-ci.org/onaio/ansible-onadata.sv
 
 This role installs and configures [Ona Data](https://github.com/onaio/onadata).
 
+Check the [examples](./examples) directory for example deployments.
+
 Requirements
 ------------
 

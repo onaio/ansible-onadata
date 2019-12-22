@@ -12,3 +12,5 @@
       become: true
     - role: onaio.nginx
       become: true
+    - role: onaio.monit
+      become: true

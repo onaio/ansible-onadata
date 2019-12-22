@@ -15,11 +15,14 @@ Here's a list of services that are installed on each of the hosts:
 1. 10.0.0.2
   a. RabbitMQ
   b. Memcached
+  c. Monit
 2. 10.0.0.3 and 10.0.0.4
   a. Ona Data
   b. NGINX
+  c. Monit
 3. 10.0.0.5
   a. PostgreSQL
+  b. Monit
 ```
 
 ### Running the Example
@@ -54,7 +57,7 @@ The `deploy-everything.yml` playbook will run the following playbooks:
 1. memcached.yml
 1. onadata.yml
 
-The `onadata.yml` playbook will set up both Ona Data and NGINX in the Ona Data servers.
+The `onadata.yml` playbook will set up both Ona Data, NGINX, and Monit in the Ona Data servers.
 
 Once the `deploy-everything.yml` playbook is done running, you can hit either of the Ona Data virtual machines (10.0.0.3 and 10.0.0.4) to access the service. NGINX will handle load balancing the traffic between the hosts.
 
@@ -180,25 +183,85 @@ example_postgresql_host: "10.0.0.5" # Set to IP address of your PostgreSQL host
 example_ancillary_host: "10.0.0.2" # Set to IP address of your ancillary host
 example_api_host_0: "10.0.0.3" # Set to IP address of your first Ona Data host
 example_api_host_1: "10.0.0.4" # Set to IP address of your second Ona Data host
+
 postgresql_onadata_password: "somesecret" # Change to a stronger passphrase
+
 rabbitmq_admin_password: "somesecret" # Change to a stronger passphrase
+
+monit_email_admins: [{"Admin", "admin@example.com"}] # Email addresses to be alerted by Monit
+no_reply_monit_email: "no-reply@example.com" # The email address Monit should send emails as
+monit_smtp_server: "127.0.0.1" # Configured SMTP server for email notifications
+monit_smtp_port: "25" # Configured SMTP port for email notifications
+monit_smtp_username: "root" # Configured SMTP user for email notifications
+monit_smtp_password: "" # Configured SMTP user password for email notifications
+slack_monit_endpoint: "" # The slack webhook to send notifications to
 ```
 
 In [inventory/group_vars/onadata/vars.yml](./inventory/group_vars/onadata/vars.yml):
 
 ```yml
 onadata_django_secret_key: "somesecret" # Change to a stronger passphrase
-onadata_version: "v2.0.11" # Change to the version of Ona Data you want to install. Check https://github.com/onaio/onadata/releases
+# Change to the version of Ona Data you want to install. Check https://github.com/onaio/onadata/releases
+onadata_version: "v2.0.11"
 onadata_domain: "example.com" # Change to your Ona Data domain
 onadata_email_admins: # Update to your admins
   - name: "Ona Data"
     email: "admin@example.com"
 onadata_support_email: "support@example.com" # Update to your support email address
+
+# Remove the email and email_smtp items if you don't want to configure email
+# notifications
+# Remove the email_smtp item if you don't need to configure SMPT to send emails
+# from the host
+monit_scripts:
+  - email
+  - email_smtp
+  - monit
+  - celeryd-ona
+  - nginx
+  - openssh-server
+  - rsyslog
+  - system
+  - uwsgi
+# The maximum amount of memory in megabytes the Ona Data service should use before
+# being restarted by Monit
+uwsgi_total_memory_limit: 3072
 ```
 In [inventory/group_vars/postgresql/vars.yml](./inventory/group_vars/postgresql/vars.yml):
 
 ```yml
 postgresql_backup_gpg_key_id: "F73D9AE7" # Update to your GPG keypair ID. Check previous section on how to do that
+
+# Remove the email and email_smtp items if you don't want to configure email
+# notifications
+# Remove the email_smtp item if you don't need to configure SMPT to send emails
+# from the host
+monit_scripts:
+  - email
+  - email_smtp
+  - monit
+  - openssh-server
+  - rsyslog
+  - system
+  - postgres
+```
+
+In [inventory/host_vars/ancillary-host/vars.yml](./inventory/host_vars/ancillary-host/vars.yml):
+
+```yml
+# Remove the email and email_smtp items if you don't want to configure email
+# notifications
+# Remove the email_smtp item if you don't need to configure SMPT to send emails
+# from the host
+monit_scripts:
+  - email
+  - email_smtp
+  - monit
+  - memcached
+  - openssh-server
+  - rsyslog
+  - system
+  - rabbitmq
 ```
 
 For the secret Ansible variables, consider using [Ansible Vault](https://docs.ansible.com/ansible/latest/user_guide/vault.html).
