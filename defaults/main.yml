@@ -11,7 +11,7 @@ onadata_system_wide_dependencies:
   - build-essential
   - "{{ onadata_python_version }}"
   - "{{ onadata_python_version }}-dev"
-  - python-pip
+  - python3-pip
   - virtualenv
   - git
   - libssl-dev
