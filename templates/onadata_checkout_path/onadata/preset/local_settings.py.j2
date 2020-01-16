@@ -82,8 +82,8 @@ BROKER_TRANSPORT = 'librabbitmq'
 CELERY_BROKER_URL = '{{ onadata_celery_broker_url }}'
 CELERY_RESULT_BACKEND = "{{ onadata_celery_result_backend }}"
 
+{% if onadata_enable_custom_templates %}
 TEMPLATE_OVERRIDE_ROOT_DIR = '{{ onadata_codebase_path }}/onadata/libs/custom_template'
-
 if isinstance(TEMPLATE_OVERRIDE_ROOT_DIR, basestring):
         # site templates overrides
         TEMPLATES[0]['DIRS'] = [
@@ -93,6 +93,8 @@ if isinstance(TEMPLATE_OVERRIDE_ROOT_DIR, basestring):
         STATICFILES_DIRS += (
             os.path.join(PROJECT_ROOT, TEMPLATE_OVERRIDE_ROOT_DIR, 'static'),
         )
+{% endif %}
+
 {% if onadata_smtp_host and onadata_smtp_port and onadata_smtp_login %}
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = '{{ onadata_smtp_host }}'

@@ -6,6 +6,7 @@
   args:
     executable: /bin/bash
     chdir: "{{ onadata_checkout_path }}"
+  when: onadata_enable_custom_templates
 
 - name: Install pricing library
   become: true
