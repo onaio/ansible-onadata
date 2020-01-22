@@ -214,6 +214,14 @@ onadata_email_admins: # Update to your admins
     email: "admin@example.com"
 onadata_support_email: "support@example.com" # Update to your support email address
 
+# Onadata SMTP
+onadata_smtp_host: # Set SMTP host to be used by Ona Data to send emails
+onadata_smtp_port: # Set SMTP port to be used by Ona Data to send emails
+onadata_smtp_login: # Set SMTP user to be used by Ona Data to send emails
+onadata_smtp_password: # Set SMTP password to be used by Ona Data to send emails
+onadata_smtp_use_tls: "True" # Whether Ona Data should connect to the SMTP server using TLS
+onadata_smtp_from: "noreply@example.com" # The email address Ona Data should send emails as
+
 # Remove the email and email_smtp items if you don't want to configure email
 # notifications
 # Remove the email_smtp item if you don't need to configure SMPT to send emails
