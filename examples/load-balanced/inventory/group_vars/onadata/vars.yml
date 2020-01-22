@@ -31,6 +31,14 @@ onadata_rabbitmq_password: "{{ rabbitmq_admin_password }}"
 onadata_rabbitmq_host: "{{ example_ancillary_host }}"
 onadata_rabbitmq_port: "{{ rabbitmq_port }}"
 
+# Onadata SMTP
+onadata_smtp_host:
+onadata_smtp_port:
+onadata_smtp_login:
+onadata_smtp_password:
+onadata_smtp_use_tls: "True"
+onadata_smtp_from: "noreply@example.com"
+
 # Onadata Memcached
 onadata_memcached_uri: "{{ example_ancillary_host }}:11211"
 
