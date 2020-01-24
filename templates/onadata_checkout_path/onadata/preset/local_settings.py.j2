@@ -213,7 +213,7 @@ if {{ onadata_use_aws }}:
     if EC2_PRIVATE_IP:
         ALLOWED_HOSTS.append(EC2_PRIVATE_IP)
 else:
-    MEDIA_URL = "https://{{ onadata_domain }}/media/"
+    MEDIA_URL = "{{ onadata_media_url }}"
     MEDIA_ROOT = os.path.join('/', 'home', 'onadata', 'media/')
 
 # Celery
