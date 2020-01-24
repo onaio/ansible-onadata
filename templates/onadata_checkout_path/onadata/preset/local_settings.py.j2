@@ -540,3 +540,10 @@ ODK_TOKEN_LENGTH = {{ onadata_odk_token_length }}
 ODK_TOKEN_FERNET_KEY = '{{ onadata_odk_token_fernet_key }}'
 
 ORG_ON_CREATE_IS_ACTIVE = {{ onadata_org_on_create_is_active }}
+USE_X_FORWARDED_HOST = {{ onadata_use_x_forwarded_host }}
+USE_X_FORWARDED_PORT = {{ onadata_use_x_forwarded_port }}
+CSRF_TRUSTED_ORIGINS = [
+{% for origin in onadata_csrf_trusted_origins %}
+    '{{ origin }}',
+{% endfor %}
+]

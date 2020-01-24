@@ -124,6 +124,9 @@ onadata_email_admins:
 onadata_debug: "False"
 onadata_cors_origin_whitelist: []
 onadata_cors_origin_regex_whitelist: []
+onadata_use_x_forwarded_host: "False"
+onadata_use_x_forwarded_port: "False"
+onadata_csrf_trusted_origins: []
 onadata_google_site_verification:
 onadata_google_analytics_property_id:
 # Whether to run Ona Data in read-only mode (no writes to database)
