@@ -166,6 +166,7 @@ onadata_support_email: "support@{{ onadata_domain }}"
 onadata_wsgi_http: "localhost:9000"
 onadata_pid_socks_dir: "/var/run/{{ onadata_service_name }}"
 onadata_pid_file: "{{ onadata_pid_socks_dir }}/{{ onadata_service_name }}.pid"
+onadata_wsgi_socket: "{{ onadata_pid_socks_dir }}/{{ onadata_service_name }}.sock"
 
 # Pricing library
 onadata_include_pricing: false

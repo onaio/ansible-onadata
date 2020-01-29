@@ -55,6 +55,7 @@ dependencies:
       django_wsgi_http: "{{ onadata_wsgi_http }}"
       django_pid_socks_dir: "{{ onadata_pid_socks_dir }}"
       django_pid_file: "{{ onadata_pid_file }}"
+      django_wsgi_socket: "{{ onadata_wsgi_socket }}"
     environment: "{{ onadata_django_env }}"
 
   - role: onaio.ssl-certificate
