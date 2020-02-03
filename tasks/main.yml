@@ -3,3 +3,9 @@
   include_tasks: install.yml
   tags:
     - install
+
+- name: Initialize the Django app
+  include_tasks: init.yml
+  when: onadata_run_init_commands
+  tags:
+    - init

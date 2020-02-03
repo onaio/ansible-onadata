@@ -69,7 +69,7 @@ onadata_media_path_mode: "0755"
 onadata_media_server_port: "443"
 onadata_media_server_protocol: "https"
 onadata_media_server_domain: "{{ onadata_domain }}"
-onadata_media_url: "{{ onadata_media_server_protocol://{{ onadata_media_server_domain  }}:{{ onadata_media_server_port }}/media/"
+onadata_media_url: "{{ onadata_media_server_protocol }}://{{ onadata_media_server_domain  }}:{{ onadata_media_server_port }}/media/"
 onadata_settings_module: "onadata.preset.local_settings"
 onadata_wsgi_module: "onadata.apps.main.wsgi:application"
 onadata_celery_app: "onadata.celery"
@@ -169,6 +169,7 @@ onadata_wsgi_http: "localhost:9000"
 onadata_pid_socks_dir: "/var/run/{{ onadata_service_name }}"
 onadata_pid_file: "{{ onadata_pid_socks_dir }}/{{ onadata_service_name }}.pid"
 onadata_wsgi_socket: "{{ onadata_pid_socks_dir }}/{{ onadata_service_name }}.sock"
+onadata_run_init_commands: true
 
 # Pricing library
 onadata_include_pricing: false

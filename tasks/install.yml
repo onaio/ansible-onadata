@@ -43,24 +43,3 @@
     chdir: "{{ onadata_codebase_path }}/docs"
   environment:
     DJANGO_SETTINGS_MODULE: "{{ onadata_settings_module }}"
-
-- name: Run Django init commands
-  become: true
-  become_user: "{{ onadata_system_user }}"
-  django_manage:
-    command: "{{ item }}"
-    app_path: "{{ onadata_codebase_path }}"
-    virtualenv: "{{ onadata_venv_path }}"
-    settings: "{{ onadata_settings_module }}"
-  with_items: "{{ onadata_init_commands }}"
-
-- name: Load pricing account fixture
-  become: true
-  become_user: "{{ onadata_system_user }}"
-  django_manage:
-    command: loaddata
-    app_path: "{{ onadata_codebase_path }}"
-    virtualenv: "{{ onadata_venv_path }}"
-    fixtures: "{{ onadata_venv_path }}/src/pricing/pricing/fixtures/initial_accounts.json"
-    settings: "{{ onadata_settings_module }}"
-  when: onadata_include_pricing
