@@ -30,7 +30,9 @@ onadata_system_wide_dependencies:
   - gcc
   - automake
   - libtool
-  - openjdk-11-jre-headless
+onadata_java_version: 11
+onadata_java_package: "openjdk-{{ onadata_java_version }}-jre-headless"
+onadata_java_home: "/usr/lib/jvm/java-{{ onadata_java_version }}-openjdk-amd64"
 onadata_pip_packages:
   - uwsgi
   - django-redis
