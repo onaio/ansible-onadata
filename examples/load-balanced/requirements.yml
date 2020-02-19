@@ -36,7 +36,9 @@
 
 - src: kbrebanov.erlang
 
-- src: Stouts.backup
+- src: https://github.com/onaio/ansible-backup.git
+  name: onaio.backup
+  version: c5fd529a5e8da96553b7aa0fa63c4929139d5588
 
 - src: https://github.com/onaio/ansible-java.git
   name: onaio.java
