@@ -362,7 +362,11 @@ MIDDLEWARE = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'onadata.libs.utils.middleware.HTTPResponseNotAllowedMiddleware',
     'onadata.libs.utils.middleware.OperationalErrorMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+X_FRAME_OPTIONS = 'DENY'
+
 {% if onadata_sentry_dsn | length > 0 %}
 from raven.transport.requests import RequestsHTTPTransport
 RAVEN_CONFIG = {
