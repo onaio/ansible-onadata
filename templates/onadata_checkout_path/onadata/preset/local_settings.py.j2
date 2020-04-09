@@ -234,6 +234,8 @@ CELERY_TASK_ROUTES = {
         'queue': 'google_export'},
     'google_export.tasks.sync_update_google_sheets': {
       'queue': 'google_export'},
+    'google_export.tasks.sync_delete_google_sheets': {
+      'queue': 'google_export'},
 }
 
 CELERY_BEAT_SCHEDULE = {
