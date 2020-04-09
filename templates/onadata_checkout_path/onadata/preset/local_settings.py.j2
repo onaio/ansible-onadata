@@ -133,10 +133,10 @@ ALLOWED_HOSTS = [
 # Cross Origin Requests (CORS)
 
 CORS_ORIGIN_WHITELIST = (
-    'localhost:3000',
-    'localhost:4000',
-    'localhost:8000',
-    'localhost:8080',
+    'http://localhost:3000',
+    'http://localhost:4000',
+    'http://localhost:8000',
+    'http://localhost:8080',
 {% for origin in onadata_cors_origin_whitelist %}
     '{{ origin }}',
 {% endfor %}

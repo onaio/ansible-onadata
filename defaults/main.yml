@@ -44,7 +44,7 @@ onadata_pip_paths:
   - "{{ onadata_checkout_path }}/requirements/s3.pip"
 onadata_python_source_version: "3.6"
 onadata_python_version: "python{{ onadata_python_source_version }}"
-onadata_version: "v2.0.11"
+onadata_version: "v2.3.0"
 onadata_git_url: "https://github.com/onaio/onadata.git"
 onadata_custom_template_git_url: "https://github.com/onaio/onadata-template.git"
 onadata_enable_custom_templates: false
@@ -189,7 +189,7 @@ onadata_include_google_export: false
 onadata_google_client_id:
 onadata_google_client_secret:
 onadata_google_client_email: "google-integration@{{ onadata_domain|replace('.', '-') }}.iam.gserviceaccount.com"
-onadata_google_export_version: "v0.7.0"
+onadata_google_export_version: "v0.8.0"
 
 # Tableau Support
 onadata_include_tableau: false
