@@ -12,7 +12,7 @@
   become: true
   become_user: "{{ onadata_system_user }}"
   pip:
-    name: "git+git@github.com:onaio/pricing.git@{{ pricing_version }}#egg=pricing"
+    name: "git+git@github.com:onaio/pricing.git@{{ onadata_pricing_version }}#egg=pricing"
     virtualenv: "{{ onadata_venv_path }}"
     extra_args: "-e"
   when: onadata_include_pricing == "True"
@@ -34,12 +34,10 @@
     virtualenv: "{{ onadata_venv_path }}"
   when: onadata_include_tableau
 
-- name: Generate Docs # noqa 301
+- name: Generate Docs
   become: true
   become_user: "{{ onadata_system_user }}"
   shell: "source {{ onadata_venv_path }}/bin/activate && /usr/bin/make html"
   args:
     executable: /bin/bash
     chdir: "{{ onadata_codebase_path }}/docs"
-  environment:
-    DJANGO_SETTINGS_MODULE: "{{ onadata_settings_module }}"
