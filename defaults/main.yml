@@ -44,7 +44,7 @@ onadata_pip_paths:
   - "{{ onadata_checkout_path }}/requirements/s3.pip"
 onadata_python_source_version: "3.6"
 onadata_python_version: "python{{ onadata_python_source_version }}"
-onadata_version: "v2.3.0"
+onadata_version: "v2.3.1"
 onadata_git_url: "https://github.com/onaio/onadata.git"
 onadata_custom_template_git_url: "https://github.com/onaio/onadata-template.git"
 onadata_enable_custom_templates: false
@@ -72,6 +72,7 @@ onadata_media_server_domain: "{{ onadata_domain }}"
 onadata_media_url: "{{ onadata_media_server_protocol }}://{{ onadata_media_server_domain  }}:{{ onadata_media_server_port }}/media/"
 onadata_settings_module: "onadata.preset.local_settings"
 onadata_wsgi_module: "onadata.apps.main.wsgi:application"
+onadata_enable_celery: true
 onadata_celery_app: "onadata.celery"
 onadata_domain: "example.com"
 onadata_celeryd_nodes: "{{ onadata_domain }} export-node publish-xls-form-node google-export xls-exports csv-exports kml-exports osm-exports csv-zip-exports sav-zip-exports external-exports zip-exports osm-exports exports"
@@ -94,7 +95,7 @@ onadata_pgsql_port: 5432
 onadata_disable_server_side_cursors: "False"
 onadata_pgsql_replicas: []
 onadata_kpi_formbuilder_url:
-onadata_django_secret_key:
+onadata_django_secret_key: "secret"
 onadata_rabbitmq_user: onadata
 onadata_rabbitmq_password:
 onadata_rabbitmq_host: 127.0.0.1
