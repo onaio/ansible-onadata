@@ -8,8 +8,6 @@
   name: onaio.ssl-certificate
   scm: git
 
-- src: ANXS.postgresql
-
 - src: https://github.com/onaio/ansible-java.git
   name: onaio.java
   scm: git
