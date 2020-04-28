@@ -53,6 +53,7 @@ dependencies:
       django_celery_app: "{{ onadata_celery_app }}"
       django_celeryd_nodes: "{{ onadata_celeryd_nodes }}"
       django_celeryd_opts: "{{ onadata_celeryd_opts }}"
+      django_enable_celery: "{{ onadata_enable_celery }}"
       django_manage_services: "{{ onadata_manage_services }}"
       django_apt_python_ppa: "{{ onadata_apt_python_ppa }}"
       django_celerybeat_extra_env_vars: "{{ onadata_celerybeat_extra_env_vars }}"
