@@ -38,6 +38,11 @@ onadata_pip_packages:
   - django-redis
   - numpy
   - django-db-readonly
+onadata_python_packages:
+  - python3.6
+  - python3.6-dev
+  - python3-distutils
+onadata_pip_git_packages:
 onadata_pip_paths:
   - "{{ onadata_checkout_path }}/requirements/base.pip"
   - "{{ onadata_checkout_path }}/requirements/ses.pip"
@@ -48,7 +53,8 @@ onadata_version: "v2.3.1"
 onadata_git_url: "https://github.com/onaio/onadata.git"
 onadata_custom_template_git_url: "https://github.com/onaio/onadata-template.git"
 onadata_enable_custom_templates: false
-onadata_git_key:
+onadata_git_key_content:
+onadata_git_key_ssh_file:
 onadata_git_key_filename: "id_ed25519"
 onadata_custom_template_version: "master"
 onadata_service_name: "{{ onadata_system_user }}"
