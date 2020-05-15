@@ -127,7 +127,9 @@ DEBUG = {{ onadata_debug }}
 TEMPLATES[0]['OPTIONS']['debug'] = {{ onadata_debug }}
 
 ALLOWED_HOSTS = [
-    '*',
+{% for host in onadata_allowed_hosts %}
+   "{{ host }}",
+{% endfor %}
 ]
 
 # Cross Origin Requests (CORS)

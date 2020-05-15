@@ -125,6 +125,7 @@ onadata_email_admins:
     email: "admin@example.com"
 # Whether to run Ona Data in debug mode
 onadata_debug: "False"
+onadata_allowed_hosts: ['*']
 onadata_cors_origin_whitelist: []
 onadata_cors_origin_regex_whitelist: []
 onadata_use_x_forwarded_host: "False"
