@@ -8,24 +8,6 @@
     chdir: "{{ onadata_checkout_path }}"
   when: onadata_enable_custom_templates
 
-- name: Install pricing library
-  become: true
-  become_user: "{{ onadata_system_user }}"
-  pip:
-    name: "git+git@github.com:onaio/pricing.git@{{ onadata_pricing_version }}#egg=pricing"
-    virtualenv: "{{ onadata_venv_path }}"
-    extra_args: "-e"
-  when: onadata_include_pricing == "True"
-
-- name: Install google export library
-  become: true
-  become_user: "{{ onadata_system_user }}"
-  pip:
-    name: "git+git@github.com:onaio/google-export.git@{{ onadata_google_export_version }}#egg=google-export"
-    virtualenv: "{{ onadata_venv_path }}"
-    extra_args: "-e"
-  when: onadata_include_google_export
-
 - name: Install tableau library
   become: true
   become_user: "{{ onadata_system_user }}"
