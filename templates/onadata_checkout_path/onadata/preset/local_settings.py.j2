@@ -559,3 +559,8 @@ CSRF_TRUSTED_ORIGINS = [
     '{{ origin }}',
 {% endfor %}
 ]
+
+{% if onadata_allow_public_datasets is defined %}
+# Project and XForm visibility
+ALLOW_PUBLIC_DATASETS = {{ onadata_allow_public_datasets }}
+{% endif %}
