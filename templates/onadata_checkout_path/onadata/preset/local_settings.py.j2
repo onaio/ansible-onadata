@@ -61,8 +61,12 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissions'
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
+{% if not onadata_api_disable_digest_auth|default(false) %}
         'onadata.libs.authentication.DigestAuthentication',
+{% endif %}
+{% if onadata_openid_providers is defined %}
         'onadata.libs.authentication.SSOHeaderAuthentication',
+{% endif %}
         'onadata.libs.authentication.TempTokenAuthentication',
         'onadata.libs.authentication.EnketoTokenAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
