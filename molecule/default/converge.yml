@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    - role: ansible-onadata
+      onadata_run_init_commands: false
+      onadata_enable_celery: false
+      onadata_manage_services: false

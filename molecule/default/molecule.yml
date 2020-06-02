@@ -3,11 +3,11 @@ dependency:
   name: galaxy
 driver:
   name: docker
-lint:
-  name: yamllint
+lint: |
+  yamllint .
 platforms:
   - name: onadata-ubuntu-18.04
-    image: solita/ubuntu-systemd:18.04
+    image: geerlingguy/docker-ubuntu1804-ansible:latest
     privileged: true
     command: /sbin/init
 scenario:
@@ -26,9 +26,9 @@ scenario:
     - destroy
 provisioner:
   name: ansible
-  lint:
-    name: ansible-lint
+  lint: |
+    ansible-lint
 verifier:
   name: testinfra
-  lint:
-    name: flake8
+  lint: |
+    flake8

@@ -38,17 +38,23 @@ onadata_pip_packages:
   - django-redis
   - numpy
   - django-db-readonly
+onadata_python_packages:
+  - python3.6
+  - python3.6-dev
+  - python3-distutils
+onadata_pip_git_packages:
 onadata_pip_paths:
   - "{{ onadata_checkout_path }}/requirements/base.pip"
   - "{{ onadata_checkout_path }}/requirements/ses.pip"
   - "{{ onadata_checkout_path }}/requirements/s3.pip"
 onadata_python_source_version: "3.6"
 onadata_python_version: "python{{ onadata_python_source_version }}"
-onadata_version: "v2.3.0"
+onadata_version: "v2.3.1"
 onadata_git_url: "https://github.com/onaio/onadata.git"
 onadata_custom_template_git_url: "https://github.com/onaio/onadata-template.git"
 onadata_enable_custom_templates: false
-onadata_git_key:
+onadata_git_key_content:
+onadata_git_key_ssh_file:
 onadata_git_key_filename: "id_ed25519"
 onadata_custom_template_version: "master"
 onadata_service_name: "{{ onadata_system_user }}"
@@ -72,6 +78,7 @@ onadata_media_server_domain: "{{ onadata_domain }}"
 onadata_media_url: "{{ onadata_media_server_protocol }}://{{ onadata_media_server_domain  }}:{{ onadata_media_server_port }}/media/"
 onadata_settings_module: "onadata.preset.local_settings"
 onadata_wsgi_module: "onadata.apps.main.wsgi:application"
+onadata_enable_celery: true
 onadata_celery_app: "onadata.celery"
 onadata_domain: "example.com"
 onadata_celeryd_nodes: "{{ onadata_domain }} export-node publish-xls-form-node google-export xls-exports csv-exports kml-exports osm-exports csv-zip-exports sav-zip-exports external-exports zip-exports osm-exports exports"
@@ -94,7 +101,7 @@ onadata_pgsql_port: 5432
 onadata_disable_server_side_cursors: "False"
 onadata_pgsql_replicas: []
 onadata_kpi_formbuilder_url:
-onadata_django_secret_key:
+onadata_django_secret_key: "secret"
 onadata_rabbitmq_user: onadata
 onadata_rabbitmq_password:
 onadata_rabbitmq_host: 127.0.0.1
@@ -124,6 +131,7 @@ onadata_email_admins:
     email: "admin@example.com"
 # Whether to run Ona Data in debug mode
 onadata_debug: "False"
+onadata_allowed_hosts: ['*']
 onadata_cors_origin_whitelist: []
 onadata_cors_origin_regex_whitelist: []
 onadata_use_x_forwarded_host: "False"
@@ -227,3 +235,9 @@ onadata_odk_token_fernet_key: ""
 onadata_odk_key_lifetime: 10
 # Length of the generated user key
 onadata_odk_token_length: 7
+
+# Authentication settings
+onadata_api_disable_digest_auth: False
+
+# Project & XForm visibility
+onadata_allow_public_datasets: False
