@@ -1,4 +1,4 @@
-Ansible: Onadata [![Build Status](https://travis-ci.org/onaio/ansible-onadata.svg?branch=master)](https://travis-ci.org/onaio/ansible-onadata)
+Ansible: Onadata ![CI](https://github.com/onaio/ansible-onadata/workflows/CI/badge.svg?master)
 ================
 
 This role installs and configures [Ona Data](https://github.com/onaio/onadata).
