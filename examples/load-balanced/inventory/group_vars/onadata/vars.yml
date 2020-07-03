@@ -20,10 +20,19 @@ onadata_pid_socks_dir: "/var/run/{{ onadata_service_name }}"
 onadata_pid_file: "{{ onadata_pid_socks_dir }}/{{ onadata_service_name }}.pid"
 
 # Onadata PostgreSQL
-onadata_pgsql_host: "{{ example_postgresql_host }}"
+onadata_pgsql_host: "127.0.0.1"
+onadata_pgsql_port: 6432
 onadata_pgsql_db: "{{ postgresql_onadata_db }}"
 onadata_pgsql_user: "{{ postgresql_onadata_user }}"
 onadata_pgsql_password: "{{ postgresql_onadata_password }}"
+
+# PgBouncer
+pgsql_db: "{{ onadata_pgsql_db }}"
+pgsql_user: "{{ onadata_pgsql_user }}"
+pgsql_password: "{{ onadata_pgsql_password }}"
+pgsql_host: "{{ example_postgresql_host }}"
+default_pool_size: 50
+pgbouncer_server_tls_ca_content: "{{ lookup('file', 'ssl/postgresql/root.crt') }}"
 
 # Onadata RabbitMQ
 onadata_rabbitmq_user: "{{ rabbitmq_admin_user }}"
@@ -77,6 +86,7 @@ nginx_sites:
         src_dir: "{{ nginx_ssl_src_dir }}"
         conf: "{{ onadata_domain }}-ssl.conf"
         remote_src: false
+        access_log_format: "timed_combined"
       location1:
         name: "/static"
         alias: "{{ onadata_static_path }}"
@@ -92,6 +102,11 @@ nginx_sites:
           - X-Forwarded-Host $server_name
           - X-Forwarded-Proto https
         proxy_next_upstream: "error timeout invalid_header http_500 http_502 http_503 http_504"
+nginx_access_logs:
+  - name: "timed_combined"
+    format: "'$http_x_forwarded_for - $remote_user [$time_local]  \"$request\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\" $request_time $upstream_response_time $gzip_ratio $request_length'"
+    options: null
+    filename: "access.log"
 nginx_onadata_loadbalancer_name: onadata
 nginx_loadbalancers:
   - upstream_name: "{{ nginx_onadata_loadbalancer_name }}"
@@ -114,3 +129,36 @@ monit_scripts:
 service_name: "{{ onadata_service_name }}"
 pid_file: "{{ onadata_pid_file }}"
 uwsgi_total_memory_limit: "3072"
+
+# Logstash
+install_logstash: true
+logstash_major_ver: "7.x"
+logstash_minor_ver: "1:7.*"
+logstash_gelf_server: 127.0.0.1
+logstash_gelf_port: 12210
+clear_logstash_config: true
+logstash_system_groups: ["adm"]
+config_logstash: true
+logstash_plugins:
+  - name: logstash-output-gelf
+    state: present
+logstash_custom_outputs:
+  - output: 'gelf'
+    lines:
+      - 'host => "{{ logstash_gelf_server }}"'
+      - 'port => "{{ logstash_gelf_port }}"'
+      - 'sender => "{{ onadata_domain }}"'
+logstash_custom_inputs:
+  - input: 'file'
+    lines:
+      - 'path => ["/var/log/nginx/{{ onadata_domain }}-https-ssl-access.log"]'
+      - 'start_position => "end"'
+      - 'add_field => {'
+      - '  ssl => true'
+      - '  nginx_access => true'
+      - '  from_nginx => true'
+      - '  from_host => "%{host}"'
+      - '  from_domain => "{{ onadata_domain }}"'
+      - '  from_onadata => true'
+      - '  git_version => "{{ onadata_version }}"'
+      - '}'

@@ -1,4 +1,6 @@
 ---
+ansible_python_interpreter: "/usr/bin/env python3"
+
 example_postgresql_host: "10.0.0.5"
 example_ancillary_host: "10.0.0.2"
 example_api_host_0: "10.0.0.3"
@@ -8,6 +10,22 @@ example_postgresql_ssh_host: "{{ example_postgresql_host }}"
 example_ancillary_ssh_host: "{{ example_ancillary_host }}"
 example_api_ssh_host_0: "{{ example_api_host_0 }}"
 example_api_ssh_host_1: "{{ example_api_host_1 }}"
+
+set_hostname: true
+server_hostname: "{{ inventory_hostname }}"
+
+install_collectd: true
+collectd_scripts_initial:
+  - "graphite"
+  - "cpu"
+  - "disk"
+  - "load"
+  - "memory"
+collectd_graphite_server_ip: "127.0.0.1"
+collectd_graphite_server_port: 2003
+collectd_graphite_server_protocol: "tcp"
+collectd_server_type: "production"
+collectd_server_owner: "example-org"
 
 postgresql_onadata_db: "onadata"
 postgresql_onadata_user: "onadata"

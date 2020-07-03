@@ -16,13 +16,18 @@ Here's a list of services that are installed on each of the hosts:
   a. RabbitMQ
   b. Memcached
   c. Monit
+  d. collectd
 2. 10.0.0.3 and 10.0.0.4
   a. Ona Data
   b. NGINX
   c. Monit
+  d. PgBouncer
+  e. collectd
+  f. Logstash
 3. 10.0.0.5
   a. PostgreSQL
   b. Monit
+  c. collectd
 ```
 
 ### Running the Example
@@ -52,6 +57,7 @@ ansible-playbook -i inventory deploy-everything.yml
 ```
 
 The `deploy-everything.yml` playbook will run the following playbooks:
+1. initial-setup.yml
 1. postgresql.yml
 1. rabbitmq.yml
 1. memcached.yml
@@ -99,6 +105,7 @@ You might not need the following files/directories:
 1. [bring-up.sh](./bring-up.sh) and [tear-down.sh](./tear-down.sh): Wrapper scripts around Vagrant.
 1. [files/gpg/F73D9AE7](./files/gpg/F73D9AE7): GPG keypair used in this example. We highly recommend that you create your own GPG keypair for encrypting the database backups. Check the section below for instructions on how to do this.
 1. [files/ssl/example.com](./files/ssl/example.com): Self-signed certificate for this example. Use SSL certificates for your domain.
+1. [files/ssl/postgresql](./files/ssl/postgresql): These are publicly available and shouldn't be considered secure. Generate your own set of keys.
 
 #### 2. Generating a GPG Keypair
 
@@ -172,7 +179,137 @@ In this example, the PostgreSQL backups are written to the `/backups/postgresql`
 
 This setup should work if your DNS record for the Ona Data service points to either or both of the Ona Data hosts. NGINX will handle load balancing the traffic between the hosts.
 
-#### 6. Variables to Change
+#### 6. TLS for PostgreSQL
+
+We recommend that you encrypt traffic between your application servers and the database server. Please DO NOT use the certificate and key file in this repository. To do this, you will need to generate a TLS key and certificate for the PostgreSQL server. The certificate ought to be signed by a Certificate Authority (CA), also created by you, for the clients to also authenticate the identity of the server.
+
+To generate a CA key and certificate, run:
+
+```sh
+openssl req -new -nodes -text -out root.csr \
+  -keyout root.key -subj "/CN=root.<your domain>"
+openssl x509 -req -in root.csr -text -days 3650 \
+  -extfile /etc/ssl/openssl.cnf -extensions v3_ca \
+  -signkey root.key -out root.crt
+```
+
+Make sure to place the certificate and key file in a directory the [*onaio.postgresql*](https://github.com/onaio/ansible-postgresql) and [*onaio.pgbouncer*](https://github.com/onaio/ansible-pgbouncer) roles can access them. The [*onaio.ssl-certificate*](https://github.com/onaio/ansible-ssl-certificate) role (through the PostgreSQL role) will generate the server key and certificate for you, and sign the certificate using the CA key:
+
+```sh
+mv root.crt files/ssl/postgresql/
+mv root.key files/ssl/postgresql/
+rm root.csr
+```
+
+#### 7. Backups
+
+This example setup uses Duply (a wrapper around [Duplicity](http://duplicity.nongnu.org/)) to handle the encrypted full and incremental PostgreSQL backups. The Duply profile for the Ona Data database backup is configured to be run using the PostgreSQL user. To manually create a backup run the following commands while inside the PostgreSQL server:
+
+```sh
+sudo su - postgres
+duply onadata backup
+```
+
+If the backup is successful, the command will output the statistics for the backup (Take note of the `Errors` statistic):
+
+```
+--------------[ Backup Statistics ]--------------
+StartTime 1593701022.77 (Thu Jul  2 14:43:42 2020)
+EndTime 1593701022.79 (Thu Jul  2 14:43:42 2020)
+ElapsedTime 0.02 (0.02 seconds)
+SourceFiles 1
+SourceFileSize 270868 (265 KB)
+NewFiles 0
+NewFileSize 0 (0 bytes)
+DeletedFiles 0
+ChangedFiles 1
+ChangedFileSize 270868 (265 KB)
+ChangedDeltaSize 0 (0 bytes)
+DeltaEntries 1
+RawDeltaSize 269396 (263 KB)
+TotalDestinationSizeChange 31073 (30.3 KB)
+Errors 0
+-------------------------------------------------
+
+--- Finished state OK at 14:43:42.871 - Runtime 00:00:00.280 ---
+
+--- Start running command POST at 14:43:42.883 ---
+Running '/etc/duply/onadata/post' - OK
+--- Finished state OK at 14:43:42.906 - Runtime 00:00:00.022 ---
+```
+
+Depending on what the status of the last backup is, Duply might run either a full or incremental backup. Incremental backup files contain just the diff of the state of the database dump after the last full backup. If you prefer to manually perform a full backup, run:
+
+```sh
+sudo su - postgres
+duply onadata full
+```
+
+Otherwise, Duply has been configured to perform a full backup weekly, and one incremental backup every day (at 1AM server time) after, for six days. Duply has been configured to maintain a maximum of four full backups. Backups are also kept for a maximum of thirty days. Update the `postgresql_backup_profiles` variable in [inventory/group_vars/postgresql/vars.yml](./inventory/group_vars/postgresql/vars.yml) if you'd want to change any of the above settings.
+
+To get the list of full and incremental backups, run:
+
+```sh
+sudo su - postgres
+duply onadata status
+```
+
+If the status command runs successfully, it should output statistics like below:
+
+```
+Found 0 secondary backup chains.
+
+Found primary backup chain with matching signature chain:
+-------------------------
+Chain start time: Thu Jul  2 12:53:39 2020
+Chain end time: Thu Jul  2 14:54:37 2020
+Number of contained backup sets: 4
+Total number of contained volumes: 4
+ Type of backup set:                            Time:      Num volumes:
+                Full         Thu Jul  2 12:53:39 2020                 1
+         Incremental         Thu Jul  2 14:43:42 2020                 1
+         Incremental         Thu Jul  2 14:54:32 2020                 1
+         Incremental         Thu Jul  2 14:54:37 2020                 1
+-------------------------
+No orphaned or incomplete backup sets found.
+--- Finished state OK at 14:54:47.327 - Runtime 00:00:00.164 ---
+```
+
+To restore the last backup (irregardless of whether it is a full or incremental backup), run:
+
+```sh
+sudo su - postgres
+duply onadata restore <path to file to place the database dump> 
+```
+
+Duply also allows you to restore a backup from a specific time. You can do this by adding the age of the backup to restore after the database dump path in the restore command above. Run `duply usage` for supported age formats.
+
+You can configure to receive notifications for when backups are either successful or fail. Do this using the `postgresql_backup_post_actions` variable. The variable accepts a list of dicts that configure either email or command actions. You can, for instance, add to it an item that makes Duply (the tool we use for backups) run the echo command if a backup fails. You can do the same with emails. For each of the items in the list you are allowed to leave out either the `on_error` or `on_success` dicts if you don't want an action done when a backup fails or is successful respectively. The example values below configure Duply to echo "Backup has failed" and send out an email when the backups either run successfully (email subject set to "Ona Data Backup Successful") or fail (email subject set to "Ona Data Backup Failed"):
+
+```yml
+postgresql_backup_post_actions:
+  - type: command
+    on_error:
+      command: "echo 'Backup has failed'"
+  - type: email
+    name: ona
+    to: "admin@example.com"
+    from: "monitoring@example.com"
+    smtp:
+      port: 587
+      host: smtp.example.com
+      user: admin
+      password: admin
+      use_startls: true
+    on_error:
+      subject: "Ona Data Backup Failed"
+      message: "The last Ona Data database (in host 10.0.0.5) backup failed."
+    on_success:
+      subject: "Ona Data Backup Successful"
+      message: "The last Ona Data database (in host 10.0.0.5) backup was successful."
+```
+
+#### 8. Variables to Change
 
 Consider changing the following variables:
 
@@ -188,6 +325,15 @@ example_postgresql_ssh_host: "{{ example_postgresql_host }}"  # Change to Public
 example_ancillary_ssh_host: "{{ example_ancillary_host }}"  # Change to Public IP of ancillary host if not on the same subnet.
 example_api_ssh_host_0: "{{ example_api_host_0 }}"  # Change to Public IP of first Ona Data host if not on the same subnet.
 example_api_ssh_host_1: "{{ example_api_host_1 }}"  # Change to Public IP of second Ona Data host if not on the same subnet.
+
+set_hostname: true # Set to false if you don't want to set hostname
+
+install_collectd: true # Set to false if you don't want to install collectd
+collectd_graphite_server_ip: "127.0.0.1" # Set this to the Graphite host you want to forward collectd stats to
+collectd_graphite_server_port: 2003 # Set this to the Graphite port to forward stats to
+collectd_graphite_server_protocol: "tcp" # Set this to the protocol to use to forward Graphite stats
+collectd_server_type: "production" # Set this to the environment to tag stats from the hosts
+collectd_server_owner: "data-team" # Set this to the name of the owner for the server
 
 postgresql_onadata_password: "somesecret" # Change to a stronger passphrase
 
@@ -239,11 +385,23 @@ monit_scripts:
 # The maximum amount of memory in megabytes the Ona Data service should use before
 # being restarted by Monit
 uwsgi_total_memory_limit: 3072
+
+install_logstash: true # Set to false if you don't want to install Logstash
+logstash_gelf_server: 127.0.0.1 # The Gelf server to forward NGINX logs to
+logstash_gelf_port: 12210 # The Gelf port to forward NGINX logs to
 ```
 In [inventory/group_vars/postgresql/vars.yml](./inventory/group_vars/postgresql/vars.yml):
 
 ```yml
+# Update to your database server's hostname or whatever domain name you are
+# using to connect to it
+postgresql_ssl_domain: "ansible-onadata-lb-postgres"
+
 postgresql_backup_gpg_key_id: "F73D9AE7" # Update to your GPG keypair ID. Check previous section on how to do that
+postgresql_backup_gpg_pass: "" # Update to the passphrase you gave your GPG private key, if you did
+# Update with a list of actions you want done when backups either fail or are successful
+# Check section on backups above for details of how to do this
+postgresql_backup_post_actions: []
 
 # Remove the email and email_smtp items if you don't want to configure email
 # notifications
@@ -279,7 +437,7 @@ monit_scripts:
 
 For the secret Ansible variables, consider using [Ansible Vault](https://docs.ansible.com/ansible/latest/user_guide/vault.html).
 
-#### 7. Network Placement
+#### 9. Network Placement
 
 It's recommended that you place the ancillary and PostgreSQL hosts in your internal network. None of the services deployed in both of those servers need to be accessed from the internet.
 
