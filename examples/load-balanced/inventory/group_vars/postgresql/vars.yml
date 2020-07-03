@@ -28,16 +28,34 @@ postgresql_ext_postgis_deps:
   - libgeos-c1v5
   - "postgresql-{{ postgresql_version }}-postgis-{{ postgresql_ext_postgis_version }}"
   - "postgresql-{{ postgresql_version }}-postgis-{{ postgresql_ext_postgis_version }}-scripts"
+postgresql_ssl_domain: "postgres-host"
+postgresql_ssl_ca_key: "{{ lookup('file', 'ssl/postgresql/root.key') }}"
+postgresql_ssl_ca_cert: "{{ lookup('file', 'ssl/postgresql/root.crt') }}"
 
 # PostgreSQL Backup
-postgresql_backup_system_user: "root"
-postgresql_backup_system_group: "root"
 postgresql_backup_database: "{{ postgresql_onadata_db }}"
 postgresql_backup_gpg_private_key: "files/gpg/{{ postgresql_backup_gpg_key_id }}/priv.asc"
 postgresql_backup_gpg_public_key: "files/gpg/{{ postgresql_backup_gpg_key_id }}/pub.asc"
 postgresql_backup_gpg_trust_file: "files/gpg/{{ postgresql_backup_gpg_key_id }}/ultimate.trust"
 postgresql_backup_gpg_key_id: "F73D9AE7"
 postgresql_backup_target_path: "/backups/postgresql"
+postgresql_backup_gpg_pass: ""
+postgresql_backup_post_actions: []
+postgresql_backup_profiles:
+  - name: "{{ postgresql_backup_database }}"
+    schedule: 0 1 * * *
+    source: "postgresql://{{ postgresql_backup_database }}"
+    target: "{{ postgresql_backup_target }}"
+    max_age: "1M" # Time frame for old backups to keep.
+    full_max_age: "1W" # forces a full backup if last full backup reaches a specified age
+    max_full_backups: 4 # Number of full backups to keep.
+    user: "{{ postgresql_backup_system_user }}"
+    gpg_key: "{{ postgresql_backup_gpg_key_id }}"
+    gpg_pw: "{{ postgresql_backup_gpg_pass }}"
+    gpg_opts: "{{ postgres_backup_gpg_opts }}"
+    gpg_private_key_src: "{{ postgresql_backup_gpg_private_key }}"
+    gpg_public_key_src: "{{ postgresql_backup_gpg_public_key }}"
+    post_actions: "{{ postgresql_backup_post_actions }}"
 
 # Monit
 monit_scripts:

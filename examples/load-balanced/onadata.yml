@@ -8,9 +8,32 @@
     - name: Setup Ansible
       setup:
   roles:
+    - role: onaio.pgbouncer
+      become: true
+      tags:
+        - pgbouncer
     - role: onaio.onadata
       become: true
+      tags:
+        - onadata
     - role: onaio.nginx
       become: true
+      tags:
+        - nginx
     - role: onaio.monit
       become: true
+      tags:
+        - nginx
+    - role: onaio.collectd
+      collectd_deployed_app_name: "onadata"
+      collectd_deployed_app_version: "{{ onadata_version }}"
+      collectd_scripts: ["nginx"]
+      become: true
+      tags:
+        - collectd
+      when: install_collectd
+    - role: onaio.logstash
+      become: true
+      tags:
+       - logstash
+      when: install_logstash

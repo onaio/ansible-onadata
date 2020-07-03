@@ -8,7 +8,20 @@
   roles:
     - role: kbrebanov.erlang
       become: true
+      tags:
+        - erlang
     - role: onaio.rabbitmq
       become: true
+      tags:
+        - rabbitmq
     - role: onaio.monit
       become: true
+      tags:
+        - monit
+    - role: onaio.collectd
+      collectd_deployed_app_name: "rabbitmq"
+      collectd_deployed_app_version: "latest"
+      become: true
+      tags:
+        - collectd
+      when: install_collectd

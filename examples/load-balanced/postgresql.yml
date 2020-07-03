@@ -8,5 +8,18 @@
   roles:
     - role: onaio.postgresql
       become: true
+      tags:
+        - postgres
+        - postgresql
     - role: onaio.monit
       become: true
+      tags:
+        - monit
+    - role: onaio.collectd
+      collectd_deployed_app_name: "postgresql"
+      collectd_deployed_app_version: "{{ postgresql_version }}"
+      collectd_scripts: ["postgresql"]
+      become: true
+      tags:
+        - collectd
+      when: install_collectd

@@ -1,23 +1,23 @@
 ---
-- hosts: memcached
+- hosts: all
   gather_facts: False
   pre_tasks:
     - include_tasks: tasks/python3-ubuntu.yml
     - name: Setup Ansible
       setup:
   roles:
-    - role: geerlingguy.memcached
+    - role: onaio.hostname
       become: true
       tags:
-        - memcached
-    - role: onaio.monit
-      become: true
-      tags:
-        - monit
+        - monitoring
+        - hostname
+      when: set_hostname
+
     - role: onaio.collectd
-      collectd_deployed_app_name: "monit"
-      collectd_deployed_app_version: "latest"
+      collectd_scripts: "{{ collectd_scripts_initial }}"
+      collectd_server_mode: true
       become: true
       tags:
-        - collectd
+        - monitoring
+        - collectdx
       when: install_collectd

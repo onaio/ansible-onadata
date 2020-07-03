@@ -2,44 +2,78 @@
 - src: https://github.com/onaio/ansible-django.git
   name: onaio.django
   scm: git
-  version: ff6ca75f0a55bb600d3d4ced3e803a2141f498ae
+  version: afc3de8917d0e0abc6c54d8a531219357522fd52
 
 - src: https://github.com/onaio/ansible-ssl-certificate.git
   name: onaio.ssl-certificate
   scm: git
+  version: f382d69ae6a8c733ddac183f0d0b3dcd8be51cfd
 
 - src: https://github.com/onaio/ansible-nginx.git
   name: onaio.nginx
   scm: git
+  version: 82be3d4638b1422f1ceaffe6658bb3373da6c745
 
 - src: https://github.com/onaio/ansible-gpg-import.git
   name: onaio.gpg-import
   scm: git
+  version: 55ca41b89b855a082aa24725b807f2f1e24b9572
 
 - src: https://github.com/onaio/ansible-postgresql.git
   name: onaio.postgresql
   scm: git
+  version: a630676e0e13574a53cfa26ca326e4f4d06d30b1
 
 - src: https://github.com/onaio/ansible-onadata.git
   name: onaio.onadata
   scm: git
+  version: 9a59d140b0a4c3721a94e4793e05ccb92910bca4
 
 - src: https://github.com/onaio/ansible-rabbitmq.git
   name: onaio.rabbitmq
   scm: git
+  version: 95ca24c2553954e224d6a7808c81624a1f5a67c1
 
 - src: https://github.com/onaio/ansible-monit.git
   name: onaio.monit
   scm: git
+  version: 6dc374e7be8f40eb51eef95ab1dff029d9e13674
 
 - src: geerlingguy.memcached
+  version: 1.1.0
 
 - src: kbrebanov.erlang
+  version: v3.0.0
 
 - src: https://github.com/onaio/ansible-backup.git
   name: onaio.backup
-  version: c5fd529a5e8da96553b7aa0fa63c4929139d5588
+  scm: git
+  version: 8b385675aa6980699719a7f940e98e68d3ba37f4
 
 - src: https://github.com/onaio/ansible-java.git
   name: onaio.java
+  scm: git
   version: 0877b49298034bdf459dfbc9027fd03a983c9e76
+
+- src: https://github.com/onaio/ansible-pgbouncer.git
+  name: onaio.pgbouncer
+  scm: git
+  version: 2b720041b48b2c92d4e5f382bc4eeb6859d5530c
+
+- src: https://github.com/onaio/ansible-collectd.git
+  name: onaio.collectd
+  scm: git
+  version: 9414ead1c6b0f191b639eadd8622b6ff34a82ced
+
+- src: https://github.com/onaio/ansible-logstash.git
+  name: onaio.logstash
+  scm: git
+  version: fb9c0aa8f133c5d48fb832ac29a0814cf02883e3
+
+- src: https://github.com/onaio/ansible-hostname.git
+  name: onaio.hostname
+  scm: git
+  version: dd5c5ee9bd5d45b5e5f6186b5e63e4eba486d8e5
+
+- src: ANXS.postgresql
+  version: v1.11.1
