@@ -2,6 +2,9 @@
 - import_playbook: initial-setup.yml
   tags:
     - initial-setup
+- import_playbook: samba.yml
+  tags:
+    - samba
 - import_playbook: postgresql.yml
   tags:
     - postgresql

@@ -10,3 +10,6 @@ ancillary-host
 
 [rabbitmq]
 ancillary-host
+
+[samba]
+samba-host

@@ -5,6 +5,7 @@ example_postgresql_host: "10.0.0.5"
 example_ancillary_host: "10.0.0.2"
 example_api_host_0: "10.0.0.3"
 example_api_host_1: "10.0.0.4"
+example_samba_ssh_host: "10.0.0.6"
 
 example_postgresql_ssh_host: "{{ example_postgresql_host }}"
 example_ancillary_ssh_host: "{{ example_ancillary_host }}"
@@ -51,3 +52,10 @@ monit_smtp_password: ""
 monit_setup_mode: true
 monit_version: "1:5.*"
 slack_monit_endpoint: ""
+
+samba_onadata_user: "onadata"
+samba_onadata_password: "somesecret"
+samba_onadata_share: "media"
+samba_backups_user: "backups"
+samba_backups_password: "somesecret"
+samba_backups_share: "backups"

@@ -16,6 +16,10 @@
       become: true
       tags:
         - onadata
+    - role: onaio.systemd_cifs_mount
+      become: true
+      tags:
+        - cifs
     - role: onaio.nginx
       become: true
       tags:

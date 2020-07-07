@@ -1,0 +1,26 @@
+---
+users:
+  - username: "{{ samba_onadata_user }}"
+    group: "{{ samba_onadata_user }}"
+    name: "Ona Data Samba User"
+    shell: /sbin/nologin
+  - username: "{{ samba_backups_user }}"
+    group: "{{ samba_backups_user }}"
+    name: "Backups Samba User"
+    shell: /sbin/nologin
+samba_users:
+  - name: "{{ samba_onadata_user }}"
+    password: "{{ samba_onadata_password }}"
+  - name: "{{ samba_backups_user }}"
+    password: "{{ samba_backups_password }}"
+samba_shares:
+  - name: "{{ samba_onadata_share }}"
+    comment: "Shared Ona Data media files"
+    group: "{{ samba_onadata_user }}"
+    write_list: "{{ samba_onadata_user }}"
+    path: "/var/lib/samba/{{ samba_onadata_share }}"
+  - name: "{{ samba_backups_share }}"
+    comment: "Backup remote storage"
+    group: "{{ samba_backups_user }}"
+    write_list: "{{ samba_backups_user }}"
+    path: "/var/lib/samba/{{ samba_backups_share }}"

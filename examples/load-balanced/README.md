@@ -28,6 +28,9 @@ Here's a list of services that are installed on each of the hosts:
   a. PostgreSQL
   b. Monit
   c. collectd
+4. 10.0.0.6 (optional)
+  a. Samba
+  b. collectd
 ```
 
 ### Running the Example
@@ -58,6 +61,7 @@ ansible-playbook -i inventory deploy-everything.yml
 
 The `deploy-everything.yml` playbook will run the following playbooks:
 1. initial-setup.yml
+1. samba.yml
 1. postgresql.yml
 1. rabbitmq.yml
 1. memcached.yml
@@ -173,7 +177,14 @@ For the load balanced setup to work as expected, the two Ona Data servers will n
 
 We, therefore, recommend mounting the same network storage as that directory on both servers. Please make sure the `onadata` (or whatever `onadata_system_user` is set to) system user has read and write permissions on this mount point.
 
-In this example, the PostgreSQL backups are written to the `/backups/postgresql` directory in the PostgreSQL host. If you choose to still write the backups to the filesystem, we recommend that you mount network storage as the `/backups/postgresql` directory (or whatever `postgresql_backup_target_path` is set to).
+In this example, the PostgreSQL backups are written to the `/var/lib/postgresql/backups` directory in the PostgreSQL host. If you choose to still write the backups to the filesystem, we recommend that you mount network storage as the `/var/lib/postgresql/backups` directory (or whatever `postgresql_backup_target_path` is set to).
+
+Both the Ona Data media and PostgreSQL backup directories in this example are mount points for Samba shares in the Samba server. It is not a requirement that you have to use Samba for file sharing, and just for demonstration purposes. This also means that you DO NOT have to deploy the Samba server if you have network storage available. You will, however, have to specify the correct mount point options in the onadata and postgres group_vars. Refer to section on variables to change below.
+
+If you do not intend on installing Samba for network attached storage, make sure to make the following changes to your inventory:
+ 1. Delete [inventory/group_vars/samba](./inventory/group_vars/samba)
+ 1. Delete [inventory/host_vars/samba-host](./inventory/host_vars/samba-host)
+ 1. Remove all mentions of the samba group_var and samba-host host_var in [inventory/hosts](./inventory/hosts)
 
 #### 5. DNS Record
 
@@ -320,6 +331,7 @@ example_postgresql_host: "10.0.0.5" # Set to IP address of your PostgreSQL host
 example_ancillary_host: "10.0.0.2" # Set to IP address of your ancillary host
 example_api_host_0: "10.0.0.3" # Set to IP address of your first Ona Data host
 example_api_host_1: "10.0.0.4" # Set to IP address of your second Ona Data host
+example_samba_ssh_host: "10.0.0.6" # Set to the IP address of your Samba host
 
 example_postgresql_ssh_host: "{{ example_postgresql_host }}"  # Change to Public IP of PostgreSQL host if not on the same subnet.
 example_ancillary_ssh_host: "{{ example_ancillary_host }}"  # Change to Public IP of ancillary host if not on the same subnet.
@@ -346,6 +358,13 @@ monit_smtp_port: "25" # Configured SMTP port for email notifications
 monit_smtp_username: "root" # Configured SMTP user for email notifications
 monit_smtp_password: "" # Configured SMTP user password for email notifications
 slack_monit_endpoint: "" # The slack webhook to send notifications to
+
+samba_onadata_user: "onadata" # Set to the Samba users you would want to use for Ona Data's media share
+samba_onadata_password: "somesecret" # Set to the password you would want to use for Ona Data's media share
+samba_onadata_share: "media" # Set to the Samba share you would want to use for Ona Data's media
+samba_backups_user: "backups" # Set to the Samba users you would want to use for the backups share
+samba_backups_password: "somesecret" # Set to the password you would want to use for the backups share
+samba_backups_share: "backups" # Set to the Samba share you would want to use for backups
 ```
 
 In [inventory/group_vars/onadata/vars.yml](./inventory/group_vars/onadata/vars.yml):
@@ -359,6 +378,7 @@ onadata_email_admins: # Update to your admins
   - name: "Ona Data"
     email: "admin@example.com"
 onadata_support_email: "support@example.com" # Update to your support email address
+onadata_media_path: "{{ cifs_mount_path }}/{{ samba_onadata_share }}" # Update to the right path, depending on how you mount the media storage
 
 # Onadata SMTP
 onadata_smtp_host: # Set SMTP host to be used by Ona Data to send emails
@@ -367,6 +387,14 @@ onadata_smtp_login: # Set SMTP user to be used by Ona Data to send emails
 onadata_smtp_password: # Set SMTP password to be used by Ona Data to send emails
 onadata_smtp_use_tls: "True" # Whether Ona Data should connect to the SMTP server using TLS
 onadata_smtp_from: "noreply@example.com" # The email address Ona Data should send emails as
+
+# Media Mount Point
+cifs_mount_share: "//{{ example_samba_ssh_host }}" # Set to the domain name or IP address of the network attached storage device
+cifs_mount_user: "{{ samba_onadata_user }}" # Set to the user to authenticate as on the network attached storage
+cifs_mount_password: "{{ samba_onadata_password }}" # Set to the password to authenticate using on the network attached storage
+cifs_mount_options: "uid=onadata,gid=onadata,username={{ cifs_mount_user }},password={{ cifs_mount_password }}" # Set to the right mount options to use with the network attached storage (depends on the protocol being used)
+cifs_mounts:
+  - "{{ samba_onadata_share }}" # Update to the path within the network attached storage to mount as Ona Data's media store
 
 # Remove the email and email_smtp items if you don't want to configure email
 # notifications
@@ -402,6 +430,14 @@ postgresql_backup_gpg_pass: "" # Update to the passphrase you gave your GPG priv
 # Update with a list of actions you want done when backups either fail or are successful
 # Check section on backups above for details of how to do this
 postgresql_backup_post_actions: []
+
+# Backup Mount Point
+cifs_mount_share: "//{{ example_samba_ssh_host }}" # Set to the domain name or IP address of the network attached storage device
+cifs_mount_user: "{{ samba_onadata_user }}" # Set to the user to authenticate as on the network attached storage
+cifs_mount_password: "{{ samba_onadata_password }}" # Set to the password to authenticate using on the network attached storage
+cifs_mount_options: "uid=postgres,gid=postgres,username={{ cifs_mount_user }},password={{ cifs_mount_password }}" # Set to the right mount options to use with the network attached storage (depends on the protocol being used)
+cifs_mounts:
+  - "{{ samba_onadata_share }}" # Update to the path within the network attached storage to mount as the backup store
 
 # Remove the email and email_smtp items if you don't want to configure email
 # notifications
