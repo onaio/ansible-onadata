@@ -1,6 +1,6 @@
 ---
 # PostgreSQL General
-postgresql_version: 9.6
+postgresql_version: 10
 postgresql_users:
   - name: "{{ postgresql_onadata_user }}"
     pass: "{{ postgresql_onadata_password }}"
