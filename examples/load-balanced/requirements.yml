@@ -58,7 +58,7 @@
 - src: https://github.com/onaio/ansible-pgbouncer.git
   name: onaio.pgbouncer
   scm: git
-  version: 2b720041b48b2c92d4e5f382bc4eeb6859d5530c
+  version: 88d5e8dfc403d9de3c7954d426823546ff33a1cb
 
 - src: https://github.com/onaio/ansible-collectd.git
   name: onaio.collectd
@@ -77,3 +77,13 @@
 
 - src: ANXS.postgresql
   version: v1.11.1
+
+- src: bertvv.samba
+  version: v2.7.1
+
+- src: arillso.users
+  version: 1.4.5
+
+- src: https://github.com/onaio/ansible-systemd-cifs-mount.git
+  name: onaio.systemd_cifs_mount
+  version: 614a9b65ae551e1d3b09167d238b74e29b9aa714

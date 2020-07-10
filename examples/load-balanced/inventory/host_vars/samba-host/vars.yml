@@ -1,0 +1,3 @@
+---
+ansible_user: "ubuntu"
+ansible_host: "{{ example_samba_ssh_host }}"

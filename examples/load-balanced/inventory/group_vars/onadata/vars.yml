@@ -12,7 +12,7 @@ onadata_codebase_path: "{{ onadata_system_user_home }}/app"
 onadata_versioned_path: "{{ onadata_codebase_path }}-versioned"
 onadata_checkout_path: "{{ onadata_versioned_path }}/{{ onadata_version }}"
 onadata_system_user_home: "/home/{{ onadata_system_user }}"
-onadata_media_path: "{{ onadata_system_user_home }}/media"
+onadata_media_path: "{{ cifs_mount_path }}/{{ samba_onadata_share }}"
 onadata_system_user: "onadata"
 onadata_wsgi_bind_port: 9000
 onadata_service_name: "{{ onadata_system_user }}"
@@ -51,6 +51,15 @@ onadata_smtp_from: "noreply@example.com"
 # Onadata Memcached
 onadata_memcached_uri: "{{ example_ancillary_host }}:11211"
 
+# Media Mount Point
+cifs_mount_share: "//{{ example_samba_ssh_host }}"
+cifs_mount_user: "{{ samba_onadata_user }}"
+cifs_mount_password: "{{ samba_onadata_password }}"
+cifs_mount_options: "uid=onadata,gid=onadata,username={{ cifs_mount_user }},password={{ cifs_mount_password }}"
+cifs_mount_path: "/home/onadata"
+cifs_mounts:
+  - "{{ samba_onadata_share }}"
+  
 # NGINX
 nginx_install_method: "package"
 nginx_site_names:

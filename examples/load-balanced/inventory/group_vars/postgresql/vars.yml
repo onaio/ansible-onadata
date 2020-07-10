@@ -1,6 +1,6 @@
 ---
 # PostgreSQL General
-postgresql_version: 9.6
+postgresql_version: 10
 postgresql_users:
   - name: "{{ postgresql_onadata_user }}"
     pass: "{{ postgresql_onadata_password }}"
@@ -38,7 +38,7 @@ postgresql_backup_gpg_private_key: "files/gpg/{{ postgresql_backup_gpg_key_id }}
 postgresql_backup_gpg_public_key: "files/gpg/{{ postgresql_backup_gpg_key_id }}/pub.asc"
 postgresql_backup_gpg_trust_file: "files/gpg/{{ postgresql_backup_gpg_key_id }}/ultimate.trust"
 postgresql_backup_gpg_key_id: "F73D9AE7"
-postgresql_backup_target_path: "/backups/postgresql"
+postgresql_backup_target_path: "{{ cifs_mount_path }}/{{ samba_backups_share }}"
 postgresql_backup_gpg_pass: ""
 postgresql_backup_post_actions: []
 postgresql_backup_profiles:
@@ -56,6 +56,15 @@ postgresql_backup_profiles:
     gpg_private_key_src: "{{ postgresql_backup_gpg_private_key }}"
     gpg_public_key_src: "{{ postgresql_backup_gpg_public_key }}"
     post_actions: "{{ postgresql_backup_post_actions }}"
+
+# Backup Mount Point
+cifs_mount_share: "//{{ example_samba_ssh_host }}"
+cifs_mount_user: "{{ samba_backups_user }}"
+cifs_mount_password: "{{ samba_backups_password }}"
+cifs_mount_options: "uid=postgres,gid=postgres,username={{ cifs_mount_user }},password={{ cifs_mount_password }}"
+cifs_mount_path: "/var/lib/postgresql"
+cifs_mounts:
+  - "{{ samba_backups_share }}"
 
 # Monit
 monit_scripts:

@@ -1,0 +1,23 @@
+---
+- hosts: samba
+  gather_facts: False
+  pre_tasks:
+    - include_tasks: tasks/python3-ubuntu.yml
+    - name: Setup Ansible
+      setup:
+  roles:
+    - role: arillso.users
+      become: true
+      tags:
+        - system-users
+    - role: bertvv.samba
+      become: true
+      tags:
+        - samba
+    - role: onaio.collectd
+      collectd_deployed_app_name: "samba"
+      collectd_deployed_app_version: "latest"
+      become: true
+      tags:
+        - collectd
+      when: install_collectd
