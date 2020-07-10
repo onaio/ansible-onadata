@@ -2,7 +2,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "samba" do |samba|
     samba.vm.provider :virtualbox do |vb|
       vb.name = "ansible-onadata-lb-samba"
-      vb.memory = 256
+      vb.memory = 512
       vb.cpus = 1
     end
 
