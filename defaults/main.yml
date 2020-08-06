@@ -238,6 +238,3 @@ onadata_odk_token_length: 7
 
 # Authentication settings
 onadata_api_disable_digest_auth: False
-
-# Project & XForm visibility
-onadata_allow_public_datasets: False
