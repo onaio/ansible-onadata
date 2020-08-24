@@ -85,6 +85,12 @@ OAUTH2_PROVIDER['AUTHORIZATION_CODE_EXPIRE_SECONDS'] = 600
 BROKER_TRANSPORT = 'librabbitmq'
 CELERY_BROKER_URL = '{{ onadata_celery_broker_url }}'
 CELERY_RESULT_BACKEND = "{{ onadata_celery_result_backend }}"
+{% if celery_task_time_limit is defined %}
+CELERYD_TIME_LIMIT = "{{ onadata_celery_task_time_limit }}"
+{% endif %}
+{% if celery_worker_max_tasks is defined %}
+CELERYD_MAX_TASKS_PER_CHILD = "{{ onadata_celery_worker_max_tasks }}"
+{% endif %}
 
 {% if onadata_enable_custom_templates %}
 TEMPLATE_OVERRIDE_ROOT_DIR = '{{ onadata_codebase_path }}/onadata/libs/custom_template'

@@ -83,6 +83,13 @@ onadata_celery_app: "onadata.celery"
 onadata_domain: "example.com"
 onadata_celeryd_nodes: "{{ onadata_domain }} export-node publish-xls-form-node google-export xls-exports csv-exports kml-exports osm-exports csv-zip-exports sav-zip-exports external-exports zip-exports osm-exports exports"
 onadata_celeryd_opts: "-O fair --concurrency=8 --autoscale=6,1 -Q:{{ onadata_domain }} celery -Q:export-node exports -Q:publish-xls-form-node publish_xlsform -Q:google-export google_export -Q:xls-exports xls_exports -Q:csv-exports csv_exports -Q:kml-exports kml_exports -Q:osm-exports osm-exports -Q:csv-zip-exports csv_zip_exports -Q:sav-zip-exports sav_zip_exports -Q:external-exports external_exports -Q:zip-exports zip_exports -Q:osm-exports osm_exports -Q:exports exports"
+# Task hard time limit in seconds. Celery kills & replaces a worker processing a task that exceeds set time
+# See: https://docs.celeryproject.org/en/stable/userguide/configuration.html#std:setting-task_time_limit
+onadata_celery_task_time_limit:
+# The maximum number of tasks a worker can execute before it's replaced with a new worker
+# See: https://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-worker_max_tasks_per_child
+onadata_celery_worker_max_tasks: 100
+
 onadata_django_env:
   CPLUS_INCLUDE_PATH: "/usr/include/gdal"
   C_INCLUDE_PATH: "/usr/include/gdal"
