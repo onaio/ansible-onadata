@@ -1,0 +1,20 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Verify that host file exists.
+      stat:
+        path: "/etc/hosts"
+      register: host_file
+
+    - name: Fail if host file does not exist
+      fail:
+      when: not host_file.stat.exists
+
+    - name: Check that host file belongs to root group
+      fail:
+      when: not host_file.stat.gr_name == "root"
+
+    - name: Check that host file belongs to root user
+      fail:
+      when: not host_file.stat.pw_name == "root"
