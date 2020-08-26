@@ -81,8 +81,12 @@ onadata_wsgi_module: "onadata.apps.main.wsgi:application"
 onadata_enable_celery: true
 onadata_celery_app: "onadata.celery"
 onadata_domain: "example.com"
+# Maximum amount of memory a worker can consume before it's replaced
+# by a new worker. Value should be in KiB
+# See: https://docs.celeryproject.org/en/stable/userguide/workers.html#max-memory-per-child-setting
+onadata_celery_worker_max_memory: 195312  # 200MB
 onadata_celeryd_nodes: "{{ onadata_domain }} export-node publish-xls-form-node google-export xls-exports csv-exports kml-exports osm-exports csv-zip-exports sav-zip-exports external-exports zip-exports osm-exports exports"
-onadata_celeryd_opts: "-O fair --concurrency=8 --autoscale=6,1 -Q:{{ onadata_domain }} celery -Q:export-node exports -Q:publish-xls-form-node publish_xlsform -Q:google-export google_export -Q:xls-exports xls_exports -Q:csv-exports csv_exports -Q:kml-exports kml_exports -Q:osm-exports osm-exports -Q:csv-zip-exports csv_zip_exports -Q:sav-zip-exports sav_zip_exports -Q:external-exports external_exports -Q:zip-exports zip_exports -Q:osm-exports osm_exports -Q:exports exports"
+onadata_celeryd_opts: "-O fair --concurrency=8 --autoscale=6,1 -Q:{{ onadata_domain }} celery -Q:export-node exports -Q:publish-xls-form-node publish_xlsform -Q:google-export google_export -Q:xls-exports xls_exports -Q:csv-exports csv_exports -Q:kml-exports kml_exports -Q:osm-exports osm-exports -Q:csv-zip-exports csv_zip_exports -Q:sav-zip-exports sav_zip_exports -Q:external-exports external_exports -Q:zip-exports zip_exports -Q:osm-exports osm_exports -Q:exports exports --max-memory-per-child={{ onadata_celery_worker_max_memory }}"
 # Task hard time limit in seconds. Celery kills & replaces a worker processing a task that exceeds set time
 # See: https://docs.celeryproject.org/en/stable/userguide/configuration.html#std:setting-task_time_limit
 onadata_celery_task_time_limit:
