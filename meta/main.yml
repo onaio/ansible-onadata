@@ -40,6 +40,7 @@ dependencies:
       django_venv_path: "{{ onadata_venv_path }}"
       django_log_path: "{{ onadata_log_path }}"
       django_git_url: "{{ onadata_git_url }}"
+      django_git_version: "{{ onadata_version }}"
       django_pip_packages: "{{ onadata_pip_packages }}"
       django_pip_paths: "{{ onadata_pip_paths }}"
       django_optional_git_packages: "{{ onadata_pip_git_packages }}"
