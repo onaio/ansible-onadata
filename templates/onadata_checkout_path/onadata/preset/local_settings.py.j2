@@ -1,7 +1,10 @@
 # get most settings from staging_example.py (which in turn, imports from
 # settings.py)
 from onadata.settings.common import *  # noqa
-from celery.task.schedules import crontab
+if celery.version_info.major >= 5:
+    from celery.schedules import crontab
+else:
+    from celery.task.schedules import crontab
 
 try:
   from urllib.parse import urljoin
