@@ -127,6 +127,13 @@ AWS_S3_SECURE_URLS = True
 AWS_S3_REGION_NAME = '{{ onadata_s3_region }}'
 {% endif %}
 
+{% if onadata_use_azure %}
+DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+AZURE_ACCOUNT_NAME = '{{ onadata_azure_account_name }}'
+AZURE_ACCOUNT_KEY = '{{ onadata_azure_account_key }}'
+AZURE_CONTAINER = '{{ onadata_azure_container }}'
+{% endif %}
+
 ADMINS = (
 {% for cur_admin in onadata_email_admins %}
     ('{{ cur_admin.name }}', '{{ cur_admin.email }}'),
