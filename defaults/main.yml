@@ -135,6 +135,11 @@ onadata_smtp_use_tls: "True"
 onadata_smtp_from: "noreply@example.com"
 # Whether Ona Data is to use AWS's services such as S3
 onadata_use_aws: false
+# Whether OnaData is to use Azure's services such as Blob storage
+onadata_use_azure: false
+onadata_azure_account_name:
+onadata_azure_account_key:
+onadata_azure_container:
 onadata_s3_bucket: "{{ onadata_domain | replace('.', '-') }}-onadata"
 onadata_s3_region: "eu-west-1"
 onadata_email_admins:
