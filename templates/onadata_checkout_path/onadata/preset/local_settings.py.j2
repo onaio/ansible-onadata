@@ -582,3 +582,11 @@ CSRF_TRUSTED_ORIGINS = [
 # Project and XForm visibility
 ALLOW_PUBLIC_DATASETS = {{ onadata_allow_public_datasets }}
 {% endif %}
+
+{% if onadata_submission_retrieval_threshold is defined %}
+SUBMISSION_RETRIEVAL_THRESHOLD = {{ onadata_submission_retrieval_threshold }}
+{% endif %}
+
+{% if onadata_csv_filesize_import_async_threshhold is defined %}
+CSV_FILESIZE_IMPORT_ASYNC_THRESHOLD = {{ onadata_csv_filesize_import_async_threshhold }}
+{% endif %}
