@@ -1,7 +1,12 @@
 # get most settings from staging_example.py (which in turn, imports from
 # settings.py)
 from onadata.settings.common import *  # noqa
+
+{% if onadata_use_celery_5_imports %}
+from celery.schedules import crontab
+{% else %}
 from celery.task.schedules import crontab
+{% endif %}
 
 try:
   from urllib.parse import urljoin
