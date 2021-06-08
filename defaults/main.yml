@@ -195,6 +195,8 @@ onadata_pid_socks_dir: "/var/run/{{ onadata_service_name }}"
 onadata_pid_file: "{{ onadata_pid_socks_dir }}/{{ onadata_service_name }}.pid"
 onadata_wsgi_socket: "{{ onadata_pid_socks_dir }}/{{ onadata_service_name }}.sock"
 onadata_run_init_commands: true
+onadata_csv_filesize_import_async_threshhold: 0
+onadata_submission_retrieval_threshold: 10000
 
 # Pricing library
 onadata_include_pricing: false
