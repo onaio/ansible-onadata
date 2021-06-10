@@ -173,8 +173,16 @@ CORS_ORIGIN_REGEX_WHITELIST = (
 )
 
 CORS_EXPOSE_HEADERS = (
-    'Content-Type', 'Location', 'WWW-Authenticate', 'Content-Language',
-    'ETag', 'X-total')
+    'Content-Type',
+    'Location',
+    'WWW-Authenticate',
+    'Content-Language',
+    'ETag',
+    'X-total',
+{% for header in onadata_cors_expose_headers %}
+    '{{ header }}',
+{% endfor %}
+)
 
 CORS_ALLOW_HEADERS = (
     'x-requested-with',
@@ -185,7 +193,10 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-csrf-token',
     'cache-control',
-    'if-none-match'
+    'if-none-match',
+{% for header in onadata_cors_allow_headers %}
+    '{{ header }}',
+{% endfor %}
 )
 
 # Google credentials
