@@ -560,19 +560,34 @@ LOCKOUT_TIME = 30 * 60
 MAX_LOGIN_ATTEMPTS = 10
 SUPPORT_EMAIL = "{{ onadata_support_email }}"
 
-OPENID_CONNECT_PROVIDERS = {
-{% for provider_name,provider_details in onadata_openid_providers.items() %}
-    '{{ provider_name }}': {
-{% for cur_prop_name,cur_prop_value in provider_details.items() %}
-{% if cur_prop_value is mapping %}
-            '{{ cur_prop_name }}': {{ cur_prop_value }},
-{% else %}
-            '{{ cur_prop_name }}': '{{ cur_prop_value }}',
-{% endif %}
-{% endfor %}
-    },
+{% if onadata_enable_oidc %}
+# -----------------------------------------------------------------------------------
+# Open ID Connect Configuration
+# -----------------------------------------------------------------------------------
+OPENID_CONNECT_VIEWSET_CONFIG = {
+{% for setting_name, setting_value in onadata_openid_viewset_config.items() %}
+    {% if setting_value is mapping %}
+    "{{ setting_name }}": {
+        {% for value_name, value in setting_value.items() %}
+            "{{ value_name }}": {{ value }},
+        {% endfor %}
+    }
+    {% else %}
+    "{{ setting_name }}": {{ setting_value }},
+    {% endif %}
 {% endfor %}
 }
+
+OPENID_CONNECT_AUTH_SERVERS = {
+{% for authserver_name, authserver_details in onadata_openid_auth_servers.items() %}
+    "{{ authserver_name }}": {
+        {% for detail_name, detail_value in authserver_details.items() %}
+        "{{ detail_name }}": {{ detail_value }},
+        {% endfor %}
+    }
+{% endfor %}
+}
+{% endif %}
 
 # ODK Token Settings
 ODK_KEY_LIFETIME = {{ onadata_odk_key_lifetime }}
