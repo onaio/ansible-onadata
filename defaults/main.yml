@@ -151,6 +151,8 @@ onadata_debug: "False"
 onadata_allowed_hosts: ['*']
 onadata_cors_origin_whitelist: []
 onadata_cors_origin_regex_whitelist: []
+onadata_cors_allow_headers: []
+onadata_cors_expose_headers: []
 onadata_use_x_forwarded_host: "False"
 onadata_use_x_forwarded_port: "False"
 onadata_csrf_trusted_origins: []
