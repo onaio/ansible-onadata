@@ -69,7 +69,7 @@ REST_FRAMEWORK = {
 {% if not onadata_api_disable_digest_auth|default(false) %}
         'onadata.libs.authentication.DigestAuthentication',
 {% endif %}
-{% if onadata_openid_providers is defined %}
+{% if onadata_enable_oidc is defined %}
         'onadata.libs.authentication.SSOHeaderAuthentication',
 {% endif %}
         'onadata.libs.authentication.TempTokenAuthentication',
