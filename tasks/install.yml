@@ -16,6 +16,15 @@
     virtualenv: "{{ onadata_venv_path }}"
   when: onadata_include_tableau
 
+- name: Delete git key
+  file:
+    state: absent
+    path: "{{ onadata_system_user_home }}/.ssh/{{ onadata_git_key_filename }}"
+  become: true
+  become_user: "{{ onadata_system_user }}"
+  when:
+    - not onadata_unmanaged_git_key
+
 - name: Generate Docs
   become: true
   become_user: "{{ onadata_system_user }}"
