@@ -246,7 +246,20 @@ onadata_mqtt_ca_key: ""
 onadata_mqtt_ca_cert: ""
 
 # OpenID Support
-onadata_openid_providers: {}
+onadata_enable_oidc: false
+onadata_openid_auth_servers: {}
+
+onadata_openid_viewset_config:
+  REDIRECT_AFTER_AUTH: "LOGIN_REDIRECT_URL"
+  USE_SSO_COOKIE: "False"
+  USE_AUTH_BACKEND: "True"
+  AUTH_BACKEND: "None"
+  USE_RAPIDPRO_VIEWSET: "True"
+  MAP_CLAIM_TO_MODEL:
+    given_name: '"first_name"'
+    family_name: '"last_name"'
+    preferred_username: '"username"'
+    sub: '"email"'
 
 # Temporary User API Keys
 # Generate fernet key using:
