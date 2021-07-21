@@ -272,3 +272,9 @@ onadata_odk_token_length: 7
 
 # Authentication settings
 onadata_api_disable_digest_auth: False
+
+# Git key
+# Whether this role should delegate the clean up of the git key to
+# ansible django or delay the clean up after the installation of the git
+# packages
+onadata_unmanaged_git_key: True
