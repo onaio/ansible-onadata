@@ -569,11 +569,11 @@ OPENID_CONNECT_VIEWSET_CONFIG = {
     {% if setting_value is mapping %}
     "{{ setting_name }}": {
         {% for value_name, value in setting_value.items() %}
-            "{{ value_name }}": "{{ value }}",
+            "{{ value_name }}": {{ value }},
         {% endfor %}
     }
     {% else %}
-    "{{ setting_name }}": "{{ setting_value }}",
+    "{{ setting_name }}": {{ setting_value }},
     {% endif %}
 {% endfor %}
 }
@@ -582,7 +582,7 @@ OPENID_CONNECT_AUTH_SERVERS = {
 {% for authserver_name, authserver_details in onadata_openid_auth_servers.items() %}
     "{{ authserver_name }}": {
         {% for detail_name, detail_value in authserver_details.items() %}
-        "{{ detail_name }}": "{{ detail_value }}",
+        "{{ detail_name }}": {{ detail_value }},
         {% endfor %}
     }
 {% endfor %}
