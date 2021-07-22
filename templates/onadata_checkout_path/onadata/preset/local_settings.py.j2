@@ -571,7 +571,7 @@ OPENID_CONNECT_VIEWSET_CONFIG = {
         {% for value_name, value in setting_value.items() %}
             "{{ value_name }}": {{ value }},
         {% endfor %}
-    }
+    },
     {% else %}
     "{{ setting_name }}": {{ setting_value }},
     {% endif %}
