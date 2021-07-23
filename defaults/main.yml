@@ -170,6 +170,7 @@ onadata_enketo_api_token:
 onadata_enketo_offline: "True"
 onadata_enketo_auth_cookie: "__enketo"
 onadata_enketo_meta_uid_cookie: "__enketo_meta_uid"
+
 # The schedule for the Celery Beat task that marks export tasks as expired
 onadata_celery_beat_mark_exports_expired_schedule: "crontab(hour='*', minute='0')"
 # The schedule for the Celery Beat task that deletes export tasks that have been marked as expired
@@ -178,6 +179,30 @@ onadata_celery_beat_delete_expired_exports_schedule: "crontab(hour='*', minute='
 # see http://docs.celeryproject.org/en/master/userguide/configuration.html#std:setting-result_expires
 onadata_celery_backend_cleanup_schedule: "crontab(hour='*', minute='30')"
 onadata_celery_task_result_expires: 3600
+onadata_celery_task_route:
+  publish_xlsform:
+    - "onadata.apps.api.tasks.publish_xlsform_async"
+  xls_exports:
+    - "onadata.apps.viewer.tasks.create_xls_export"
+  csv_exports:
+    - "onadata.apps.viewer.tasks.create_csv_export"
+  kml_exports:
+    - "onadata.apps.viewer.tasks.create_kml_export"
+  osm_exports:
+    - "onadata.apps.viewer.tasks.create_osm_export"
+  zip_exports:
+    - "onadata.apps.viewer.tasks.create_zip_export"
+    - "onadata.apps.viewer.tasks.create_csv_zip_export"
+  sav_zip_exports:
+    - "onadata.apps.viewer.tasks.create_sav_zip_export"
+  external_exports:
+    - "onadata.apps.viewer.tasks.create_external_export"
+  google_export:
+    - "google_export.tasks.call_google_sheet_service"
+    - "google_export.tasks.sync_update_google_sheets"
+    - "google_export.tasks.sync_delete_google_sheets"
+    - "onadata.apps.viewer.tasks.create_google_sheet_export"
+
 # Cache control maximum age in seconds
 onadata_cache_control_max_age: 30
 # ODK attachment maximum size acceptable in bytes
