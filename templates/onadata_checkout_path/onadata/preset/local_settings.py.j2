@@ -253,24 +253,11 @@ else:
 
 # Celery
 CELERY_TASK_ROUTES = {
-    'onadata.apps.api.tasks.publish_xlsform_async': {
-        'queue': 'publish_xlsform'},
-    'onadata.apps.viewer.tasks.create_xls_export': {'queue': 'xls_exports'},
-    'onadata.apps.viewer.tasks.create_csv_export': {'queue': 'csv_exports'},
-    'onadata.apps.viewer.tasks.create_kml_export': {'queue': 'kml_exports'},
-    'onadata.apps.viewer.tasks.create_osm_export': {'queue': 'osm_exports'},
-    'onadata.apps.viewer.tasks.create_zip_export': {'queue': 'zip_exports'},
-    'onadata.apps.viewer.tasks.create_csv_zip_export': {'queue': 'csv_zip_exports'},
-    'onadata.apps.viewer.tasks.create_sav_zip_export': {'queue': 'sav_zip_exports'},
-    'onadata.apps.viewer.tasks.create_external_export': {'queue': 'external_exports'},
-    'onadata.apps.viewer.tasks.create_google_sheet_export': {
-        'queue': 'exports'},
-    'google_export.tasks.call_google_sheet_service': {
-        'queue': 'google_export'},
-    'google_export.tasks.sync_update_google_sheets': {
-      'queue': 'google_export'},
-    'google_export.tasks.sync_delete_google_sheets': {
-      'queue': 'google_export'},
+{% for queue_name, task_list in onadata_celery_task_route.items() %}
+    {% for task in task_list %}
+    "{{ task }}": { "queue": "{{ queue_name }}" },
+    {% endfor %}
+{% endfor %}
 }
 
 CELERY_BEAT_SCHEDULE = {
@@ -571,7 +558,7 @@ OPENID_CONNECT_VIEWSET_CONFIG = {
         {% for value_name, value in setting_value.items() %}
             "{{ value_name }}": {{ value }},
         {% endfor %}
-    }
+    },
     {% else %}
     "{{ setting_name }}": {{ setting_value }},
     {% endif %}
