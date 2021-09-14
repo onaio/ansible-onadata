@@ -553,15 +553,23 @@ SUPPORT_EMAIL = "{{ onadata_support_email }}"
 # -----------------------------------------------------------------------------------
 OPENID_CONNECT_VIEWSET_CONFIG = {
 {% for setting_name, setting_value in onadata_openid_viewset_config.items() %}
-    {% if setting_value is mapping %}
+{% if setting_value is mapping %}
     "{{ setting_name }}": {
-        {% for value_name, value in setting_value.items() %}
+{% for value_name, value in setting_value.items() %}
+{% if value is mapping %}
+            "{{ value_name }}": {
+{% for val_name, val in value.items() %}
+                "{{ val_name }}": {{ val }},
+{% endfor %}
+            },
+{% else %}
             "{{ value_name }}": {{ value }},
-        {% endfor %}
+{% endif %}
+{% endfor %}
     },
-    {% else %}
+{% else %}
     "{{ setting_name }}": {{ setting_value }},
-    {% endif %}
+{% endif %}
 {% endfor %}
 }
 
