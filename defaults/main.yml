@@ -42,6 +42,7 @@ onadata_python_packages:
   - python3.6
   - python3.6-dev
   - python3-distutils
+onadata_setuptools_version: "57.5.0"
 onadata_pip_git_packages: []
 onadata_pip_paths:
   - "{{ onadata_checkout_path }}/requirements/base.pip"

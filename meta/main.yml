@@ -69,6 +69,7 @@ dependencies:
       django_pid_file: "{{ onadata_pid_file }}"
       django_wsgi_socket: "{{ onadata_wsgi_socket }}"
       django_remove_git_key: "{{ onadata_unmanaged_git_key }}"
+      django_setuptools_version: "{{ onadata_setuptools_version }}"
     environment: "{{ onadata_django_env }}"
 
   - role: onaio.ssl-certificate
