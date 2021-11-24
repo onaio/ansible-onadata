@@ -51,6 +51,10 @@ KPI_FORMBUILDER_URL = '{{ onadata_kpi_formbuilder_url }}'
 # Make a unique unique key just for teskpi_formbuilder_urlting, and don't share it with anybody.
 SECRET_KEY = '{{ onadata_django_secret_key }}'
 
+{% if onadata_login_url is defined and onadata_login_url %}
+LOGIN_URL = '{{ onadata_login_url }}'
+{% endif %}
+
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 REST_FRAMEWORK = {
