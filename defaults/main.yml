@@ -67,6 +67,7 @@ onadata_log_path: "/var/log/{{ onadata_service_name }}"
 onadata_recreate_virtual_env: false
 onadata_local_settings_path: "{{ onadata_checkout_path }}/onadata/preset/local_settings.py"
 onadata_settings_template_path: "onadata_checkout_path/onadata/preset/local_settings.py.j2"
+onadata_login_url:
 onadata_init_commands:
   - migrate --noinput
   - collectstatic --noinput
