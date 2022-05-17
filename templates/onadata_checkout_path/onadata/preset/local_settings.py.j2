@@ -103,7 +103,7 @@ CELERYD_MAX_TASKS_PER_CHILD = "{{ onadata_celery_worker_max_tasks }}"
 
 {% if onadata_enable_custom_templates %}
 TEMPLATE_OVERRIDE_ROOT_DIR = '{{ onadata_codebase_path }}/onadata/libs/custom_template'
-if isinstance(TEMPLATE_OVERRIDE_ROOT_DIR, basestring):
+if isinstance(TEMPLATE_OVERRIDE_ROOT_DIR, str):
         # site templates overrides
         TEMPLATES[0]['DIRS'] = [
             os.path.join(PROJECT_ROOT, TEMPLATE_OVERRIDE_ROOT_DIR, 'templates'),
