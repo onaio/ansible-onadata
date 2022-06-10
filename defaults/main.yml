@@ -184,6 +184,8 @@ onadata_celery_task_result_expires: 3600
 onadata_celery_task_route:
   publish_xlsform:
     - "onadata.apps.api.tasks.publish_xlsform_async"
+  delete_xform:
+    - "onadata.apps.api.tasks.delete_xform_async"
   xls_exports:
     - "onadata.apps.viewer.tasks.create_xls_export"
   csv_exports:
