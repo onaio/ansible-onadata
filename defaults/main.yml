@@ -40,18 +40,18 @@ onadata_pip_packages:
   - numpy
   - django-db-readonly
 onadata_python_packages:
-  - python3.6
-  - python3.6-dev
+  - python3.9
+  - python3.9-dev
   - python3-distutils
-onadata_setuptools_version: "57.5.0"
+onadata_setuptools_version:
 onadata_pip_git_packages: []
 onadata_pip_paths:
   - "{{ onadata_checkout_path }}/requirements/base.pip"
   - "{{ onadata_checkout_path }}/requirements/ses.pip"
   - "{{ onadata_checkout_path }}/requirements/s3.pip"
-onadata_python_source_version: "3.6"
+onadata_python_source_version: "3.9"
 onadata_python_version: "python{{ onadata_python_source_version }}"
-onadata_version: "v2.5.6"
+onadata_version: "v3.0.4"
 onadata_git_url: "https://github.com/onaio/onadata.git"
 onadata_custom_template_git_url: "https://github.com/onaio/onadata-template.git"
 onadata_enable_custom_templates: false
