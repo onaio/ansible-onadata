@@ -12,7 +12,6 @@ onadata_system_wide_dependencies:
   - "{{ onadata_python_version }}"
   - "{{ onadata_python_version }}-dev"
   - python3-pip
-  - virtualenv
   - git
   - libssl-dev
   - libpq-dev
@@ -24,8 +23,8 @@ onadata_system_wide_dependencies:
   - zlib1g-dev
   - software-properties-common
   - ghostscript
-  - python-celery
-  - python-sphinx
+  - python-celery-common
+  - python3-sphinx
   - pkg-config
   - gcc
   - automake
