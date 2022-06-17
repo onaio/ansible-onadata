@@ -245,6 +245,7 @@ onadata_verification_url: "https://{{ onadata_domain }}/email-verification-confi
 onadata_include_google_export: false
 onadata_google_client_id:
 onadata_google_client_secret:
+onadata_google_project_id:
 onadata_google_client_email: "google-integration@{{ onadata_domain|replace('.', '-') }}.iam.gserviceaccount.com"
 onadata_google_export_version: "v0.8.0"
 
