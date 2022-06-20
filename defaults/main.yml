@@ -9,9 +9,6 @@ onadata_system_wide_dependencies:
   - memcached
   - libmemcached-dev
   - build-essential
-  - "{{ onadata_python_version }}"
-  - "{{ onadata_python_version }}-dev"
-  - python3-pip
   - git
   - libssl-dev
   - libpq-dev
@@ -23,8 +20,6 @@ onadata_system_wide_dependencies:
   - zlib1g-dev
   - software-properties-common
   - ghostscript
-  - python-celery-common
-  - python3-sphinx
   - pkg-config
   - gcc
   - automake
@@ -39,9 +34,12 @@ onadata_pip_packages:
   - numpy
   - django-db-readonly
 onadata_python_packages:
-  - python3.9
-  - python3.9-dev
+  - "{{ onadata_python_version }}"
+  - "{{ onadata_python_version }}-dev"
+  - python3-pip
   - python3-distutils
+  - python-celery-common
+  - python3-sphinx
 onadata_setuptools_version:
 onadata_pip_git_packages: []
 onadata_pip_paths:
