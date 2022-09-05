@@ -36,8 +36,8 @@ onadata_pip_packages:
 onadata_python_packages:
   - "{{ onadata_python_version }}"
   - "{{ onadata_python_version }}-dev"
+  - "{{ onadata_python_version }}-distutils"
   - python3-pip
-  - python3-distutils
   - python-celery-common
   - python3-sphinx
 onadata_setuptools_version:
