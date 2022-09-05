@@ -104,7 +104,7 @@ CELERYD_MAX_TASKS_PER_CHILD = "{{ onadata_celery_worker_max_tasks }}"
 
 {% if onadata_enable_custom_templates %}
 TEMPLATE_OVERRIDE_ROOT_DIR = '{{ onadata_codebase_path }}/onadata/libs/custom_template'
-if isinstance(TEMPLATE_OVERRIDE_ROOT_DIR, basestring):
+if isinstance(TEMPLATE_OVERRIDE_ROOT_DIR, str):
         # site templates overrides
         TEMPLATES[0]['DIRS'] = [
             os.path.join(PROJECT_ROOT, TEMPLATE_OVERRIDE_ROOT_DIR, 'templates'),
@@ -291,7 +291,7 @@ CACHE_MIXIN_SECONDS = {{ onadata_cache_control_max_age }}
 
 OAUTH2_PROVIDER_APPLICATION_MODEL = "oauth2_provider.Application"
 
-INSTALLED_APPS = ('readonly' ,'django.forms', 'raven.contrib.django.raven_compat',) + INSTALLED_APPS
+INSTALLED_APPS = ('readonly' ,'django.forms',) + INSTALLED_APPS
 FORM_RENDERER = u'django.forms.renderers.TemplatesSetting'
 APPS_DIR = True
 
@@ -370,6 +370,16 @@ REST_SERVICES_TO_SERIALIZERS = {
     'google_sheets': 'google_export.serializer.GoogleSheetsSerializer'
 }
 CUSTOM_MAIN_URLS.add('google_export.urls')
+GOOGLE_FLOW = {
+    "web": {
+        "client_id": GOOGLE_OAUTH2_CLIENT_ID,
+        "project_id": "{{ onadata_google_project_id }}",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_secret": GOOGLE_OAUTH2_CLIENT_SECRET
+    }
+}
 {% endif %}
 
 {% if onadata_include_tableau %}
@@ -397,11 +407,18 @@ MIDDLEWARE = (
 X_FRAME_OPTIONS = 'DENY'
 
 {% if onadata_sentry_dsn | length > 0 %}
-from raven.transport.requests import RequestsHTTPTransport
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+sentry_sdk.init(
+    dsn='{{ onadata_sentry_dsn }}',
+    integrations=[DjangoIntegration()],
+    traces_sample_rate=1.0,
+    send_default_pii=False,
+    release='{{ onadata_version }}',
+)
 RAVEN_CONFIG = {
     'dsn': '{{ onadata_sentry_dsn }}',
     'release': '{{ onadata_version }}',
-    'transport': RequestsHTTPTransport
 }
 
 LOGGING = {
@@ -455,11 +472,6 @@ LOGGING = {
             'class': 'onadata.libs.utils.log.AuditLogHandler',
             'formatter': 'verbose',
             'model': 'onadata.apps.main.models.audit.AuditLog'
-        },
-        'sentry': {
-            'level': 'ERROR', # To capture more than ERROR, change to WARNING, INFO, etc.
-            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-            'tags': {'environment': 'stage'},
         }
     },
     'loggers': {
@@ -477,16 +489,6 @@ LOGGING = {
             'handlers': ['audit'],
             'level': 'DEBUG',
             'propagate': True
-        },
-        'raven': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-        'sentry.errors': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-            'propagate': False,
         }
     }
 }

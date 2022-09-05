@@ -6,9 +6,8 @@ driver:
 lint: |
   yamllint .
 platforms:
-  - name: onadata-ubuntu-18.04
-    image: solita/ubuntu-systemd:18.04
-    dockerfile: Dockerfile.j2
+  - name: ansible-onadata-ubuntu-20.04
+    image: geerlingguy/docker-ubuntu2004-ansible:latest
     privileged: true
     command: /sbin/init
   - name: ansible-django-ubuntu-20.04

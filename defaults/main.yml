@@ -9,10 +9,6 @@ onadata_system_wide_dependencies:
   - memcached
   - libmemcached-dev
   - build-essential
-  - "{{ onadata_python_version }}"
-  - "{{ onadata_python_version }}-dev"
-  - python3-pip
-  - virtualenv
   - git
   - libssl-dev
   - libpq-dev
@@ -24,8 +20,6 @@ onadata_system_wide_dependencies:
   - zlib1g-dev
   - software-properties-common
   - ghostscript
-  - python-celery
-  - python-sphinx
   - pkg-config
   - gcc
   - automake
@@ -40,18 +34,21 @@ onadata_pip_packages:
   - numpy
   - django-db-readonly
 onadata_python_packages:
-  - python3.6
-  - python3.6-dev
+  - "{{ onadata_python_version }}"
+  - "{{ onadata_python_version }}-dev"
+  - python3-pip
   - python3-distutils
-onadata_setuptools_version: "57.5.0"
+  - python-celery-common
+  - python3-sphinx
+onadata_setuptools_version:
 onadata_pip_git_packages: []
 onadata_pip_paths:
   - "{{ onadata_checkout_path }}/requirements/base.pip"
   - "{{ onadata_checkout_path }}/requirements/ses.pip"
   - "{{ onadata_checkout_path }}/requirements/s3.pip"
-onadata_python_source_version: "3.6"
+onadata_python_source_version: "3.9"
 onadata_python_version: "python{{ onadata_python_source_version }}"
-onadata_version: "v2.5.6"
+onadata_version: "v3.0.4"
 onadata_git_url: "https://github.com/onaio/onadata.git"
 onadata_custom_template_git_url: "https://github.com/onaio/onadata-template.git"
 onadata_enable_custom_templates: false
@@ -245,6 +242,7 @@ onadata_verification_url: "https://{{ onadata_domain }}/email-verification-confi
 onadata_include_google_export: false
 onadata_google_client_id:
 onadata_google_client_secret:
+onadata_google_project_id:
 onadata_google_client_email: "google-integration@{{ onadata_domain|replace('.', '-') }}.iam.gserviceaccount.com"
 onadata_google_export_version: "v0.8.0"
 
