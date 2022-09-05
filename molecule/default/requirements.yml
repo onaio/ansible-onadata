@@ -11,4 +11,4 @@
 - src: https://github.com/onaio/ansible-java.git
   name: onaio.java
   scm: git
-  version: c2737d2ea359b696c56ba596ff515692466c5348
+  version: dc5db6258b7f24c7d7eafc7b2049cab9252e2a04

@@ -102,7 +102,7 @@ onadata_django_env:
   DJANGO_SETTINGS_MODULE: "{{ onadata_settings_module }}"
 # Whether to run tasks such as those to restart the services
 onadata_manage_services: true
-onadata_apt_python_ppa: ""
+onadata_apt_python_ppa: "ppa:deadsnakes/ppa"
 onadata_celerybeat_extra_env_vars: []
 onadata_celeryd_extra_env_vars: []
 onadata_pgsql_db: "onadata"
