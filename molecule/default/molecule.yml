@@ -7,8 +7,7 @@ lint: |
   yamllint .
 platforms:
   - name: onadata-ubuntu-18.04
-    image: solita/ubuntu-systemd:18.04
-    dockerfile: Dockerfile.j2
+    image: geerlingguy/docker-ubuntu1804-ansible:latest
     privileged: true
     command: /sbin/init
     volumes:
@@ -16,7 +15,7 @@ platforms:
     env:
       LC_ALL: "C.UTF-8"
       LANG: "C.UTF-8"
-  - name: ansible-django-ubuntu-20.04
+  - name: onadata-ubuntu-20.04
     image: geerlingguy/docker-ubuntu2004-ansible:latest
     privileged: true
     command: /sbin/init
@@ -25,7 +24,7 @@ platforms:
     env:
       LC_ALL: "C.UTF-8"
       LANG: "C.UTF-8"
-  - name: ansible-django-ubuntu-22.04
+  - name: onadata-ubuntu-22.04
     image: geerlingguy/docker-ubuntu2204-ansible:latest
     privileged: true
     command: /sbin/init
