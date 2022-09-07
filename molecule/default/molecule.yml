@@ -52,6 +52,4 @@ provisioner:
   lint: |
     ansible-lint
 verifier:
-  name: ansible
-  lint: |
-    flake8
+  name: testinfra
