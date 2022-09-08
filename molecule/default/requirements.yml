@@ -2,11 +2,7 @@
 - src: https://github.com/onaio/ansible-django.git
   name: onaio.django
   scm: git
-  version: 95143d3eef791cd08493afd5892fde01965c4a3d
-
-- src: https://github.com/DavisRayM/python.git
-  name: DavisRayM.python
-  scm: git
+  version: 9e6b654fac626c69e17729e5e0221463c115180b
 
 - src: https://github.com/onaio/ansible-ssl-certificate.git
   name: onaio.ssl-certificate
@@ -15,3 +11,4 @@
 - src: https://github.com/onaio/ansible-java.git
   name: onaio.java
   scm: git
+  version: dc5db6258b7f24c7d7eafc7b2049cab9252e2a04

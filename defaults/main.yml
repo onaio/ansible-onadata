@@ -9,10 +9,6 @@ onadata_system_wide_dependencies:
   - memcached
   - libmemcached-dev
   - build-essential
-  - "{{ onadata_python_version }}"
-  - "{{ onadata_python_version }}-dev"
-  - python3-pip
-  - virtualenv
   - git
   - libssl-dev
   - libpq-dev
@@ -24,8 +20,6 @@ onadata_system_wide_dependencies:
   - zlib1g-dev
   - software-properties-common
   - ghostscript
-  - python-celery
-  - python-sphinx
   - pkg-config
   - gcc
   - automake
@@ -33,24 +27,28 @@ onadata_system_wide_dependencies:
 onadata_java_version: 11
 onadata_java_package: "openjdk-{{ onadata_java_version }}-jre-headless"
 onadata_java_home: "/usr/lib/jvm/java-{{ onadata_java_version }}-openjdk-amd64"
+onadata_oauth2_pkce_required: False
 onadata_pip_packages:
   - uwsgi
   - django-redis
   - numpy
   - django-db-readonly
 onadata_python_packages:
-  - python3.6
-  - python3.6-dev
-  - python3-distutils
-onadata_setuptools_version: "57.5.0"
+  - "{{ onadata_python_version }}"
+  - "{{ onadata_python_version }}-dev"
+  - "{{ onadata_python_version }}-distutils"
+  - python3-pip
+  - python-celery-common
+  - python3-sphinx
+onadata_setuptools_version:
 onadata_pip_git_packages: []
 onadata_pip_paths:
   - "{{ onadata_checkout_path }}/requirements/base.pip"
   - "{{ onadata_checkout_path }}/requirements/ses.pip"
   - "{{ onadata_checkout_path }}/requirements/s3.pip"
-onadata_python_source_version: "3.6"
+onadata_python_source_version: "3.9"
 onadata_python_version: "python{{ onadata_python_source_version }}"
-onadata_version: "v2.5.6"
+onadata_version: "v3.3.2"
 onadata_git_url: "https://github.com/onaio/onadata.git"
 onadata_custom_template_git_url: "https://github.com/onaio/onadata-template.git"
 onadata_enable_custom_templates: false
@@ -81,7 +79,7 @@ onadata_media_url: "{{ onadata_media_server_protocol }}://{{ onadata_media_serve
 onadata_settings_module: "onadata.preset.local_settings"
 onadata_wsgi_module: "onadata.apps.main.wsgi:application"
 onadata_enable_celery: true
-onadata_celery_app: "onadata.celery"
+onadata_celery_app: "onadata.celeryapp"
 onadata_domain: "example.com"
 # Maximum amount of memory a worker can consume before it's replaced
 # by a new worker. Value should be in KiB
@@ -104,7 +102,7 @@ onadata_django_env:
   DJANGO_SETTINGS_MODULE: "{{ onadata_settings_module }}"
 # Whether to run tasks such as those to restart the services
 onadata_manage_services: true
-onadata_apt_python_ppa: ""
+onadata_apt_python_ppa: "ppa:deadsnakes/ppa"
 onadata_celerybeat_extra_env_vars: []
 onadata_celeryd_extra_env_vars: []
 onadata_pgsql_db: "onadata"
@@ -244,6 +242,7 @@ onadata_verification_url: "https://{{ onadata_domain }}/email-verification-confi
 onadata_include_google_export: false
 onadata_google_client_id:
 onadata_google_client_secret:
+onadata_google_project_id:
 onadata_google_client_email: "google-integration@{{ onadata_domain|replace('.', '-') }}.iam.gserviceaccount.com"
 onadata_google_export_version: "v0.8.0"
 
