@@ -28,6 +28,10 @@ onadata_java_version: 11
 onadata_java_package: "openjdk-{{ onadata_java_version }}-jre-headless"
 onadata_java_home: "/usr/lib/jvm/java-{{ onadata_java_version }}-openjdk-amd64"
 onadata_oauth2_pkce_required: False
+onadata_google_flow_scopes:
+  - "https://www.googleapis.com/auth/spreadsheets"
+  - "https://www.googleapis.com/auth/docs"
+  - "https://www.googleapis.com/auth/drive.file"
 onadata_pip_packages:
   - uwsgi
   - django-redis

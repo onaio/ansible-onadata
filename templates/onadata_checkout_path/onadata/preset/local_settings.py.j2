@@ -370,6 +370,11 @@ REST_SERVICES_TO_SERIALIZERS = {
     'google_sheets': 'google_export.serializer.GoogleSheetsSerializer'
 }
 CUSTOM_MAIN_URLS.add('google_export.urls')
+GOOGLE_FLOW_SCOPES = [
+{% for scope in onadata_google_flow_scopes %}
+    '{{ scope }}',
+{% endfor %}
+]
 GOOGLE_FLOW = {
     "web": {
         "client_id": GOOGLE_OAUTH2_CLIENT_ID,
