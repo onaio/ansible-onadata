@@ -72,6 +72,12 @@ dependencies:
       django_wsgi_socket: "{{ onadata_wsgi_socket }}"
       django_remove_git_key: "{{ onadata_unmanaged_git_key }}"
       django_setuptools_version: "{{ onadata_setuptools_version }}"
+      django_wsgi_use_cheaper: "{{ onadata_wsgi_use_cheaper }}"
+      django_wsgi_cheaper_algo: "{{ onadata_wsgi_cheaper_algo }}"
+      django_wsgi_cheaper_min_workers: "{{ onadata_wsgi_cheaper_min_workers }}"
+      django_wsgi_cheaper_max_workers: "{{ onadata_wsgi_cheaper_max_workers }}"
+      django_wsgi_cheaper_spawn_rate: "{{ onadata_wsgi_cheaper_spawn_rate }}"
+      django_wsgi_cheaper_overload: "{{ onadata_wsgi_cheaper_overload }}"
     environment: "{{ onadata_django_env }}"
 
   - role: onaio.ssl-certificate
