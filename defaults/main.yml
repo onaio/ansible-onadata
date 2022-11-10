@@ -228,6 +228,12 @@ onadata_wsgi_socket: "{{ onadata_pid_socks_dir }}/{{ onadata_service_name }}.soc
 onadata_run_init_commands: true
 onadata_csv_filesize_import_async_threshhold: 0
 onadata_submission_retrieval_threshold: 10000
+onadata_wsgi_use_cheaper: false
+onadata_wsgi_cheaper_algo: "spare"
+onadata_wsgi_cheaper_min_workers: 3
+onadata_wsgi_cheaper_max_workers: 10
+onadata_wsgi_cheaper_spawn_rate: 1
+onadata_wsgi_cheaper_overload: 30
 
 # Pricing library
 onadata_include_pricing: false
