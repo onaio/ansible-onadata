@@ -554,6 +554,9 @@ MESSAGING_ASYNC_NOTIFICATION = True
 EXPORT_TASK_PROGRESS_UPDATE_BATCH = 100
 ZIP_EXPORT_COUNTDOWN = {{ onadata_zip_export_countdown }}
 
+# Time zone settings
+TIME_ZONE = "{{ onadata_time_zone|default('UTC')}}"
+
 # Time in minutes to lock out user from account
 LOCKOUT_TIME = 30 * 60
 MAX_LOGIN_ATTEMPTS = 10
@@ -623,3 +626,51 @@ SUBMISSION_RETRIEVAL_THRESHOLD = {{ onadata_submission_retrieval_threshold }}
 {% if onadata_csv_filesize_import_async_threshhold is defined %}
 CSV_FILESIZE_IMPORT_ASYNC_THRESHOLD = {{ onadata_csv_filesize_import_async_threshhold }}
 {% endif %}
+
+try:
+    CSP_IMG_SRC += [
+        "'self'",
+        'data:',
+        {% for img_src in onadata_csp_img_src %}
+        {{ img_src }},
+        {% endfor %}
+    ]
+    CSP_SCRIPT_SRC += [
+        {% for script_src in onadata_csp_script_src %}
+        {{ script_src }},
+        {% endfor %}
+    ]
+    CSP_STYLE_SRC += [
+        {% for style_src in onadata_csp_style_src %}
+        {{ style_src }},
+        {% endfor %}
+        "'sha256-G3Xm3ZS21FJH+2uN2TQz2S2fm1GRbOTSg2Qr3MisSEg='",
+        "'sha256-71Gb4W6A/s78onLpjMXIIFjXMB7YFIRd5Z1NKJ+UwHY='",
+        "'sha256-52i34Zg+qg4/kTYjnNHEmW8jhzGRxjt77FX9aveiXqw='",
+    ]
+    CSP_FRAME_SRC += [
+        {% for frame_src in onadata_csp_frame_src %}
+        {{ frame_src }},
+        {% endfor %}
+    ]
+    CSP_FONT_SRC += [
+        {% for font_src in onadata_csp_font_src %}
+        {{ font_src }},
+        {% endfor %}
+    ]
+    CSP_CONNECT_SRC += [
+        {% for connect_src in onadata_csp_connect_src %}
+        {{ connect_src }},
+        {% endfor %}
+    ]
+    MIDDLEWARE = ('csp.middleware.CSPMiddleware',) + MIDDLEWARE
+except NameError:
+    # may be running a version of onadata that has yet to get the csp-django headers integrated.
+    pass
+
+CSRF_COOKIE_SECURE = {{ onadata_csp_cookie_secure }}
+CSRF_COOKIE_SAMESITE = "{{ onadata_csrf_cookie_samesite }}"
+CSRF_COOKIE_SECURE = {{ onadata_crf_cookie_secure }}
+CSRF_USE_SESSIONS = {{ onadata_crf_use_sessions }}
+SESSION_COOKIE_SECURE = {{ onadata_session_cookie_secure }}
+SESSION_COOKIE_SAMESITE = "{{ onadata_session_cookie_samesite }}"
