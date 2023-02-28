@@ -187,7 +187,7 @@ onadata_celery_task_route:
   publish_xlsform:
     - "onadata.apps.api.tasks.publish_xlsform_async"
   xls_exports:
-    - "onadata.apps.viewer.tasks.create_xls_export"
+    - "onadata.apps.viewer.tasks.create_xlsx_export"
   csv_exports:
     - "onadata.apps.viewer.tasks.create_csv_export"
   kml_exports:
