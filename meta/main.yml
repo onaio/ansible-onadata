@@ -1,5 +1,7 @@
 ---
 galaxy_info:
+  role_name: onadata
+  namespace: onaio
   author: Ona Engineering
   description: Installs and configures Ona Data
   company: Ona Systems Inc
