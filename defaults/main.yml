@@ -63,7 +63,7 @@ onadata_custom_template_version: "master"
 onadata_service_name: "{{ onadata_system_user }}"
 onadata_codebase_path: "{{ onadata_system_user_home }}/app"
 onadata_versioned_path: "{{ onadata_codebase_path }}-versioned"
-onadata_checkout_path: "{{ onadata_versioned_path }}/{{ onadata_version }}"
+onadata_checkout_path: "{{ onadata_versioned_path }}/{{ ansible_date_time['epoch'] }}"
 onadata_venv_path: "{{ onadata_system_user_home }}/.virtualenvs/{{ onadata_service_name }}"
 onadata_log_path: "/var/log/{{ onadata_service_name }}"
 onadata_recreate_virtual_env: false
