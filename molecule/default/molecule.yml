@@ -20,5 +20,18 @@ provisioner:
   name: ansible
   playbooks:
     converge: converge.yml
+scenario:
+  name: default
+  test_sequence:
+    - lint
+    - destroy
+    - dependency
+    - syntax
+    - create
+    - prepare
+    - converge
+    - side_effect
+    - verify
+    - destroy
 verifier:
   name: testinfra
