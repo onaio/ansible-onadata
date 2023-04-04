@@ -23,7 +23,7 @@
       onadata_run_init_commands: false
       onadata_enable_celery: true
       onadata_manage_services: true
-      onadata_version: "update-sav-reader-writer"
+      onadata_version: "main"
       onadata_celeryd_extra_env_vars:
         LC_ALL: en_US.UTF-8
         LANG: en_US.UTF-8
