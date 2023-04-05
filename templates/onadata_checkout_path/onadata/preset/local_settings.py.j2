@@ -632,37 +632,37 @@ try:
     CSP_IMG_SRC += [
         "'self'",
         'data:',
-        {% for img_src in onadata_csp_img_src %}
-        {{ img_src }},
-        {% endfor %}
+{% for img_src in onadata_csp_img_src %}
+        "{{ img_src }}",
+{% endfor %}
     ]
     CSP_SCRIPT_SRC += [
-        {% for script_src in onadata_csp_script_src %}
-        {{ script_src }},
-        {% endfor %}
+{% for script_src in onadata_csp_script_src %}
+        "{{ script_src }}",
+{% endfor %}
     ]
     CSP_STYLE_SRC += [
-        {% for style_src in onadata_csp_style_src %}
-        {{ style_src }},
-        {% endfor %}
+{% for style_src in onadata_csp_style_src %}
+        "{{ style_src }}",
+{% endfor %}
         "'sha256-G3Xm3ZS21FJH+2uN2TQz2S2fm1GRbOTSg2Qr3MisSEg='",
         "'sha256-71Gb4W6A/s78onLpjMXIIFjXMB7YFIRd5Z1NKJ+UwHY='",
         "'sha256-52i34Zg+qg4/kTYjnNHEmW8jhzGRxjt77FX9aveiXqw='",
     ]
     CSP_FRAME_SRC += [
-        {% for frame_src in onadata_csp_frame_src %}
-        {{ frame_src }},
-        {% endfor %}
+{% for frame_src in onadata_csp_frame_src %}
+        "{{ frame_src }}",
+{% endfor %}
     ]
     CSP_FONT_SRC += [
-        {% for font_src in onadata_csp_font_src %}
-        {{ font_src }},
-        {% endfor %}
+{% for font_src in onadata_csp_font_src %}
+        "{{ font_src }}",
+{% endfor %}
     ]
     CSP_CONNECT_SRC += [
-        {% for connect_src in onadata_csp_connect_src %}
-        {{ connect_src }},
-        {% endfor %}
+{% for connect_src in onadata_csp_connect_src %}
+        "{{ connect_src }}",
+{% endfor %}
     ]
     MIDDLEWARE = ('csp.middleware.CSPMiddleware',) + MIDDLEWARE
 except NameError:
