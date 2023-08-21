@@ -90,7 +90,27 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
         'rest_framework_csv.renderers.CSVRenderer',
     ),
+{% if onadata_enable_requests_throttling|default(false) %}
+    'DEFAULT_THROTTLE_CLASSES': (
+        'onadata.libs.throttle.RequestHeaderThrottle',
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'header': '{{ onadata_throttling_rate }}/minute'
+    }
+{% endif %}
 }
+{% if onadata_enable_requests_throttling|default(false) %}
+THROTTLE_HEADERS = {
+    "HTTP_USER_AGENT": [
+{% for user_agent in onadata_throttling_user_agents %}
+        '{{ user_agent }}',
+{% endfor %}
+    ],
+{% if onadata_throttling_remote_user is defined %}
+    "REMOTE_USER": '{{ onadata_throttling_remote_user }}'
+{% endif %}
+}
+{% endif %}
 OAUTH2_PROVIDER['AUTHORIZATION_CODE_EXPIRE_SECONDS'] = 600
 OAUTH2_PROVIDER['PKCE_REQUIRED'] = {{ onadata_oauth2_pkce_required }}
 BROKER_TRANSPORT = 'librabbitmq'
