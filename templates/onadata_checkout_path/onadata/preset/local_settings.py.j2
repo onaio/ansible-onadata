@@ -218,7 +218,7 @@ TESTING_MODE = False
 JWT_SECRET_KEY = '{{ onadata_jwt_secret_key }}'
 JWT_ALGORITHM = 'HS256'
 ENKETO_AUTH_COOKIE_DOMAIN = '{{ onadata_enketo_auth_cookie_domain }}'
-ENKETO_CLIENT_LOGIN_URL = '{{ onadata_enketo_login_url }}'
+ENKETO_CLIENT_LOGIN_URL = {'*': '{{ onadata_enketo_login_url }}'}
 ENKETO_URL = '{{ onadata_enketo_url }}'
 ENKETO_API_SURVEY_PATH = '/api_v2/survey'
 ENKETO_PREVIEW_URL = urljoin(ENKETO_URL, ENKETO_API_SURVEY_PATH + '/preview')
@@ -331,7 +331,7 @@ CUSTOM_MAIN_URLS.add('pricing.urls')
 if {{ onadata_enable_email_verification }}:
     ENABLE_EMAIL_VERIFICATION = True
     VERIFIED_KEY_TEXT = "{{ onadata_verified_key_text }}"
-    VERIFICATION_URL = "{{ onadata_verification_url }}"
+    VERIFICATION_URL = {'*': "{{ onadata_verification_url }}"}
 
 GOOGLE_STEP2_URI = "https://{{ onadata_domain }}/gwelcome"
 GOOGLE_OAUTH2_CLIENT_ID = "{{ onadata_google_client_id }}"
