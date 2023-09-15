@@ -49,7 +49,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install test dependencies.
-        run: pip3 install ansible molecule[docker] docker pytest-testinfra
+        run: pip3 install ansible molecule-plugins[docker] docker pytest-testinfra
 
       - name: Run Molecule tests.
         working-directory: onaio/ansible-onadata
