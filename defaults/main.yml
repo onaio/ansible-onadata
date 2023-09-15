@@ -326,3 +326,8 @@ onadata_crf_cookie_secure: True
 onadata_crf_use_sessions: True
 onadata_session_cookie_secure: True
 onadata_session_cookie_samesite: "Strict"
+
+# throttling
+onadata_enable_requests_throttling: False
+onadata_throttling_rate: 50
+onadata_throttling_user_agents: []
