@@ -36,7 +36,6 @@ jobs:
         distro:
           - ubuntu2204
           - ubuntu2004
-          - ubuntu1804
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v3
