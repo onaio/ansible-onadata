@@ -1,11 +1,11 @@
 ---
 ansible_python_interpreter: "/usr/bin/env python3"
 
-example_postgresql_host: "10.0.0.5"
-example_ancillary_host: "10.0.0.2"
-example_api_host_0: "10.0.0.3"
-example_api_host_1: "10.0.0.4"
-example_samba_ssh_host: "10.0.0.6"
+example_postgresql_host: "192.168.56.5"
+example_ancillary_host: "192.168.56.2"
+example_api_host_0: "192.168.56.3"
+example_api_host_1: "192.168.56.4"
+example_samba_ssh_host: "192.168.56.6"
 
 example_postgresql_ssh_host: "{{ example_postgresql_host }}"
 example_ancillary_ssh_host: "{{ example_ancillary_host }}"
