@@ -1,6 +1,8 @@
 ---
 # PostgreSQL General
-postgresql_version: 10
+postgresql_version: 15
+monit_postgresql_version: 15
+monit_postgresql_listen_addresses: "{{ postgresql_listen_addresses }}"
 postgresql_users:
   - name: "{{ postgresql_onadata_user }}"
     pass: "{{ postgresql_onadata_password }}"
@@ -23,7 +25,7 @@ postgresql_pg_hba_md5_hosts:
   - "{{ example_postgresql_host }}/32"
   - "{{ example_api_host_0 }}/32"
   - "{{ example_api_host_1 }}/32"
-postgresql_ext_postgis_version: "2.5"
+postgresql_ext_postgis_version: "3"
 postgresql_ext_postgis_deps:
   - libgeos-c1v5
   - "postgresql-{{ postgresql_version }}-postgis-{{ postgresql_ext_postgis_version }}"
@@ -65,6 +67,8 @@ cifs_mount_options: "uid=postgres,gid=postgres,username={{ cifs_mount_user }},pa
 cifs_mount_path: "/var/lib/postgresql"
 cifs_mounts:
   - "{{ samba_backups_share }}"
+
+monit_setup_mode: True
 
 # Monit
 monit_scripts:

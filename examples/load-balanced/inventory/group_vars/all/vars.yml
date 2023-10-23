@@ -14,8 +14,9 @@ example_api_ssh_host_1: "{{ example_api_host_1 }}"
 
 set_hostname: true
 server_hostname: "{{ inventory_hostname }}"
+ansible_ssh_host: "{{ ansible_host }}"
 
-install_collectd: true
+install_collectd: false
 collectd_scripts_initial:
   - "graphite"
   - "cpu"
@@ -34,6 +35,8 @@ postgresql_onadata_password: "somesecret"
 
 rabbitmq_admin_user: "admin"
 rabbitmq_admin_password: "somesecret"
+rabbitmq_erlang_cookie: YDJHMWIQKFQBCEIDXOXF
+# TODO: Update this
 rabbitmq_port: 5672
 rabbitmq_management_port: 15672
 
@@ -49,7 +52,7 @@ monit_smtp_server: "127.0.0.1"
 monit_smtp_port: "25"
 monit_smtp_username: "root"
 monit_smtp_password: ""
-monit_setup_mode: true
+monit_setup_mode: True
 monit_version: "1:5.*"
 slack_monit_endpoint: ""
 

@@ -1,4 +1,6 @@
 ---
+rabbitmq_user: "{{ rabbitmq_admin_user }}"
+rabbitmq_ulimit_open_files: 512
 rabbitmq_users:
   - user: "{{ rabbitmq_admin_user }}"
     password: "{{ rabbitmq_admin_password }}"
@@ -10,6 +12,3 @@ rabbitmq_users:
 rabbitmq_plugins:
   - rabbitmq_management
   - rabbitmq_top
-rabbitmq_ulimit_open_files: "60000"
-
-erlang_version: 20.3
