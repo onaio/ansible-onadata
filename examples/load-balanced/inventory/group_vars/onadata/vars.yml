@@ -1,7 +1,7 @@
 ---
 # Onadata General
 onadata_django_secret_key: "somesecret"
-onadata_version: "v2.0.11"
+onadata_version: "v3.14.0"
 onadata_domain: "example.com"
 onadata_email_admins:
   - name: "Ona Data"
@@ -33,6 +33,7 @@ pgsql_password: "{{ onadata_pgsql_password }}"
 pgsql_host: "{{ example_postgresql_host }}"
 default_pool_size: 50
 pgbouncer_server_tls_ca_content: "{{ lookup('file', 'ssl/postgresql/root.crt') }}"
+pgbouncer_version: "1.*"
 
 # Onadata RabbitMQ
 onadata_rabbitmq_user: "{{ rabbitmq_admin_user }}"
@@ -62,6 +63,7 @@ cifs_mounts:
   
 # NGINX
 nginx_install_method: "package"
+ubuntu_release: "jammy"
 nginx_site_names:
  - "{{ onadata_domain }}"
 nginx_http_site_name: "{{ onadata_domain }}-http"
@@ -140,7 +142,7 @@ pid_file: "{{ onadata_pid_file }}"
 uwsgi_total_memory_limit: "3072"
 
 # Logstash
-install_logstash: true
+install_logstash: false
 logstash_major_ver: "7.x"
 logstash_minor_ver: "1:7.*"
 logstash_gelf_server: 127.0.0.1

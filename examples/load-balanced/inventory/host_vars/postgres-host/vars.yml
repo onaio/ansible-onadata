@@ -1,3 +1,13 @@
 ---
 ansible_user: "ubuntu"
 ansible_host: "{{ example_postgresql_ssh_host }}"
+
+# Monit
+monit_scripts:
+  - email
+  - email_smtp
+  - monit
+  - openssh-server
+  - rsyslog
+  - system
+  - postgres
