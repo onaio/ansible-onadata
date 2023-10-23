@@ -5,6 +5,9 @@
     - include_tasks: tasks/python3-ubuntu.yml
     - name: Setup Ansible
       setup:
+    - name: Install acl
+      become: true
+      shell: apt install acl
   roles:
     - role: onaio.postgresql
       become: true
