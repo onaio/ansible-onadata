@@ -1,11 +1,11 @@
 ---
 # Onadata General
 onadata_django_secret_key: "somesecret"
-onadata_version: "v3.14.0"
+onadata_version: "v3.14.2"
 onadata_domain: "example.com"
 onadata_email_admins:
   - name: "Ona Data"
-    email: "admin@example.com"
+    email: "admin@example.com" # TODO: update this
 onadata_support_email: "support@example.com"
 onadata_static_path: "{{ onadata_checkout_path }}/onadata/static/"
 onadata_codebase_path: "{{ onadata_system_user_home }}/app"
@@ -18,6 +18,53 @@ onadata_wsgi_bind_port: 9000
 onadata_service_name: "{{ onadata_system_user }}"
 onadata_pid_socks_dir: "/var/run/{{ onadata_service_name }}"
 onadata_pid_file: "{{ onadata_pid_socks_dir }}/{{ onadata_service_name }}.pid"
+
+# Onadata celery
+onadata_celeryd_nodes: "{{ nginx_server_name }} export-node publish-xls-form-node google-export xlsx-exports csv-exports kml-exports osm-exports csv-zip-exports sav-zip-exports external-exports zip-exports osm-exports exports post-processing csv-imports delete-xforms messaging"
+onadata_celeryd_opts: "-O fair --concurrency=4 --autoscale=6,2 -Q:{{ nginx_server_name }} celery -Q:export-node exports -Q:publish-xls-form-node publish_xlsform -Q:google-export google_export -Q:xlsx-exports xlsx_exports -Q:csv-exports csv_exports -Q:kml-exports kml_exports -Q:osm-exports osm-exports -Q:csv-zip-exports csv_zip_exports -Q:sav-zip-exports sav_zip_exports -Q:external-exports external_exports -Q:zip-exports zip_exports -Q:osm-exports osm_exports -Q:exports exports -Q:csv-imports csv_imports -Q:delete-xforms delete_xforms -Q:messaging messaging"
+
+# How long (in seconds or timedelta) a celery task should be considered valid
+# see http://docs.celeryproject.org/en/master/userguide/configuration.html#std:setting-result_expires
+onadata_celery_task_result_expires: 3600
+
+# The schedule for the Celery Beat task that marks export tasks as expired
+onadata_celery_beat_mark_exports_expired_schedule: "crontab(hour='*', minute='0')"
+
+# The schedule for the Celery Beat task that deletes export tasks that have been marked as expired
+onadata_celery_beat_delete_expired_exports_schedule: "crontab(hour='*', minute='10')"
+
+# The schedule for running the celery.backend_cleanup task (responsible for cleaning expired task results)
+# see http://docs.celeryproject.org/en/master/userguide/configuration.html#std:setting-result_expires
+onadata_celery_backend_cleanup_schedule: "crontab(hour='*', minute='30')"
+onadata_celery_task_route:
+  messaging:
+    - "onadata.apps.messaging.tasks.call_backend_async"
+  delete_xforms:
+    - "onadata.apps.api.tasks.delete_xform_async"
+  csv_imports:
+    - "onadata.libs.utils.csv_import.submit_csv_async"
+  publish_xlsform:
+    - "onadata.apps.api.tasks.publish_xlsform_async"
+  xlsx_exports:
+    - "onadata.apps.viewer.tasks.create_xlsx_export"
+  csv_exports:
+    - "onadata.apps.viewer.tasks.create_csv_export"
+  kml_exports:
+    - "onadata.apps.viewer.tasks.create_kml_export"
+  osm_exports:
+    - "onadata.apps.viewer.tasks.create_osm_export"
+  zip_exports:
+    - "onadata.apps.viewer.tasks.create_zip_export"
+    - "onadata.apps.viewer.tasks.create_csv_zip_export"
+  sav_zip_exports:
+    - "onadata.apps.viewer.tasks.create_sav_zip_export"
+  external_exports:
+    - "onadata.apps.viewer.tasks.create_external_export"
+  google_export:
+    - "google_export.tasks.call_google_sheet_service"
+    - "google_export.tasks.sync_update_google_sheets"
+    - "google_export.tasks.sync_delete_google_sheets"
+    - "onadata.apps.viewer.tasks.create_google_sheet_export"
 
 # Onadata PostgreSQL
 onadata_pgsql_host: "127.0.0.1"
@@ -60,12 +107,12 @@ cifs_mount_options: "uid=onadata,gid=onadata,username={{ cifs_mount_user }},pass
 cifs_mount_path: "/home/onadata"
 cifs_mounts:
   - "{{ samba_onadata_share }}"
-  
+
 # NGINX
 nginx_install_method: "package"
 ubuntu_release: "jammy"
 nginx_site_names:
- - "{{ onadata_domain }}"
+  - "{{ onadata_domain }}"
 nginx_http_site_name: "{{ onadata_domain }}-http"
 nginx_https_site_name: "{{ onadata_domain }}-https"
 nginx_enabled_sites:
@@ -115,7 +162,7 @@ nginx_sites:
         proxy_next_upstream: "error timeout invalid_header http_500 http_502 http_503 http_504"
 nginx_access_logs:
   - name: "timed_combined"
-    format: "'$http_x_forwarded_for - $remote_user [$time_local]  \"$request\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\" $request_time $upstream_response_time $gzip_ratio $request_length'"
+    format: '''$http_x_forwarded_for - $remote_user [$time_local]  "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" $request_time $upstream_response_time $gzip_ratio $request_length'''
     options: null
     filename: "access.log"
 nginx_onadata_loadbalancer_name: onadata
@@ -154,22 +201,22 @@ logstash_plugins:
   - name: logstash-output-gelf
     state: present
 logstash_custom_outputs:
-  - output: 'gelf'
+  - output: "gelf"
     lines:
       - 'host => "{{ logstash_gelf_server }}"'
       - 'port => "{{ logstash_gelf_port }}"'
       - 'sender => "{{ onadata_domain }}"'
 logstash_custom_inputs:
-  - input: 'file'
+  - input: "file"
     lines:
       - 'path => ["/var/log/nginx/{{ onadata_domain }}-https-ssl-access.log"]'
       - 'start_position => "end"'
-      - 'add_field => {'
-      - '  ssl => true'
-      - '  nginx_access => true'
-      - '  from_nginx => true'
+      - "add_field => {"
+      - "  ssl => true"
+      - "  nginx_access => true"
+      - "  from_nginx => true"
       - '  from_host => "%{host}"'
       - '  from_domain => "{{ onadata_domain }}"'
-      - '  from_onadata => true'
+      - "  from_onadata => true"
       - '  git_version => "{{ onadata_version }}"'
-      - '}'
+      - "}"
