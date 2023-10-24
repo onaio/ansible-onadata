@@ -6,6 +6,6 @@ Vagrant.configure("2") do |config|
       vb.cpus = 1
     end
 
-    anc.vm.network "private_network", ip: "10.0.0.2"
+    anc.vm.network "private_network", ip: "192.168.56.2"
   end
 end

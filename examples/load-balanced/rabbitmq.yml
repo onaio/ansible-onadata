@@ -5,11 +5,11 @@
     - include_tasks: tasks/python3-ubuntu.yml
     - name: Setup Ansible
       setup:
-  roles:
-    - role: kbrebanov.erlang
+  post_tasks:
+    - name: Verify that rabbitmq user is created as expected
       become: true
-      tags:
-        - erlang
+      shell: rabbitmqctl authenticate_user {{ rabbitmq_admin_user }} {{ rabbitmq_admin_password }}
+  roles:
     - role: onaio.rabbitmq
       become: true
       tags:

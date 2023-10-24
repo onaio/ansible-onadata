@@ -12,23 +12,23 @@ This directory contains Ansible playbooks to deploy services against four Ubuntu
 Here's a list of services that are installed on each of the hosts:
 
 ```
-1. 10.0.0.2
+1. 192.168.56.2
   a. RabbitMQ
   b. Memcached
   c. Monit
   d. collectd
-2. 10.0.0.3 and 10.0.0.4
+2. 192.168.56.3 and 192.168.56.4
   a. Ona Data
   b. NGINX
   c. Monit
   d. PgBouncer
   e. collectd
   f. Logstash
-3. 10.0.0.5
+3. 192.168.56.5
   a. PostgreSQL
   b. Monit
   c. collectd
-4. 10.0.0.6 (optional)
+4. 192.168.56.6 (optional)
   a. Samba
   b. collectd
 ```
@@ -69,20 +69,20 @@ The `deploy-everything.yml` playbook will run the following playbooks:
 
 The `onadata.yml` playbook will set up both Ona Data, NGINX, and Monit in the Ona Data servers.
 
-Once the `deploy-everything.yml` playbook is done running, you can hit either of the Ona Data virtual machines (10.0.0.3 and 10.0.0.4) to access the service. NGINX will handle load balancing the traffic between the hosts.
+Once the `deploy-everything.yml` playbook is done running, you can hit either of the Ona Data virtual machines (192.168.56.3 and 192.168.56.4) to access the service. NGINX will handle load balancing the traffic between the hosts.
 
-To hit 10.0.0.3 using cURL, run:
+To hit 192.168.56.3 using cURL, run:
 
 ```sh
-curl --insecure --header 'Host: example.com' https://10.0.0.3
+curl --insecure --header 'Host: example.com' https://192.168.56.3
 ```
 
 We provide the `--insecure` flag since this example deployment uses a self-signed SSL certificate. In your actual deployment, please don't use a self-signed SSL certificate (unless you really have to).
 
-To access Ona Data on a browser, you will need to set example.com to resolve to either 10.0.0.3 or 10.0.0.4. On MacOS and Linux, set example.com to resolve to 10.0.0.4 by adding the following line to your `/etc/hosts` file:
+To access Ona Data on a browser, you will need to set example.com to resolve to either 192.168.56.3 or 192.168.56.4. On MacOS and Linux, set example.com to resolve to 192.168.56.4 by adding the following line to your `/etc/hosts` file:
 
 ```ini
-10.0.0.4        example.com
+192.168.56.4        example.com
 ```
 
 For Windows, follow [these](https://www.howtogeek.com/howto/27350/beginner-geek-how-to-edit-your-hosts-file/) instructions.
@@ -314,10 +314,10 @@ postgresql_backup_post_actions:
       use_startls: true
     on_error:
       subject: "Ona Data Backup Failed"
-      message: "The last Ona Data database (in host 10.0.0.5) backup failed."
+      message: "The last Ona Data database (in host 192.168.56.5) backup failed."
     on_success:
       subject: "Ona Data Backup Successful"
-      message: "The last Ona Data database (in host 10.0.0.5) backup was successful."
+      message: "The last Ona Data database (in host 192.168.56.5) backup was successful."
 ```
 
 #### 8. Variables to Change
@@ -327,11 +327,11 @@ Consider changing the following variables:
 In [inventory/group_vars/all/vars.yml](./inventory/group_vars/all/vars.yml):
 
 ```yml
-example_postgresql_host: "10.0.0.5" # Set to IP address of your PostgreSQL host
-example_ancillary_host: "10.0.0.2" # Set to IP address of your ancillary host
-example_api_host_0: "10.0.0.3" # Set to IP address of your first Ona Data host
-example_api_host_1: "10.0.0.4" # Set to IP address of your second Ona Data host
-example_samba_ssh_host: "10.0.0.6" # Set to the IP address of your Samba host
+example_postgresql_host: "192.168.56.5" # Set to IP address of your PostgreSQL host
+example_ancillary_host: "192.168.56.2" # Set to IP address of your ancillary host
+example_api_host_0: "192.168.56.3" # Set to IP address of your first Ona Data host
+example_api_host_1: "192.168.56.4" # Set to IP address of your second Ona Data host
+example_samba_ssh_host: "192.168.56.6" # Set to the IP address of your Samba host
 
 example_postgresql_ssh_host: "{{ example_postgresql_host }}"  # Change to Public IP of PostgreSQL host if not on the same subnet.
 example_ancillary_ssh_host: "{{ example_ancillary_host }}"  # Change to Public IP of ancillary host if not on the same subnet.

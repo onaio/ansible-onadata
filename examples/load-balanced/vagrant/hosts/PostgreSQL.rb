@@ -6,6 +6,6 @@ Vagrant.configure("2") do |config|
       vb.cpus = 1
     end
 
-    postgres.vm.network "private_network", ip: "10.0.0.5"
+    postgres.vm.network "private_network", ip: "192.168.56.5"
   end
 end
