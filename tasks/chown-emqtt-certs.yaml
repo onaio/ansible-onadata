@@ -1,0 +1,12 @@
+---
+- name: Change emqtt key file permissions
+  file:
+    path: /etc/ssl/certs/emqx/onadata_key.pem
+    owner: "{{ onadata_system_user }}"
+    group: "{{ onadata_system_user }}"
+
+- name: Change emqtt certificate file permissions
+  file:
+    path: /etc/ssl/certs/emqx/onadata_cert.pem
+    owner: "{{ onadata_system_user }}"
+    group: "{{ onadata_system_user }}"
