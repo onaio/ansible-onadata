@@ -113,7 +113,6 @@ THROTTLE_HEADERS = {
 {% endif %}
 OAUTH2_PROVIDER['AUTHORIZATION_CODE_EXPIRE_SECONDS'] = 600
 OAUTH2_PROVIDER['PKCE_REQUIRED'] = {{ onadata_oauth2_pkce_required }}
-BROKER_TRANSPORT = 'librabbitmq'
 CELERY_BROKER_URL = '{{ onadata_celery_broker_url }}'
 CELERY_RESULT_BACKEND = "{{ onadata_celery_result_backend }}"
 {% if celery_task_time_limit is defined %}
@@ -364,7 +363,7 @@ STREAM_DATA = True
 {% if onadata_cache_backend == 'memcached' %}
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
         'LOCATION': "{{ onadata_memcached_uri }}",
     }
 }

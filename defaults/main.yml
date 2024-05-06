@@ -70,9 +70,9 @@ onadata_recreate_virtual_env: false
 onadata_local_settings_path: "{{ onadata_checkout_path }}/onadata/preset/local_settings.py"
 onadata_settings_template_path: "onadata_checkout_path/onadata/preset/local_settings.py.j2"
 onadata_login_url:
-onadata_init_commands:
-  - migrate --noinput
-  - collectstatic --noinput
+onadata_init_commands: []
+  # - migrate --noinput
+  # - collectstatic --noinput
 onadata_static_path: "{{ onadata_checkout_path }}/onadata/static/"
 onadata_media_path: "{{ onadata_system_user_home }}/media"
 onadata_media_path_mode: "0755"
@@ -225,7 +225,7 @@ onadata_wsgi_http: "localhost:9000"
 onadata_pid_socks_dir: "/var/run/{{ onadata_service_name }}"
 onadata_pid_file: "{{ onadata_pid_socks_dir }}/{{ onadata_service_name }}.pid"
 onadata_wsgi_socket: "{{ onadata_pid_socks_dir }}/{{ onadata_service_name }}.sock"
-onadata_run_init_commands: true
+onadata_run_init_commands: false
 onadata_csv_filesize_import_async_threshhold: 0
 onadata_submission_retrieval_threshold: 10000
 onadata_wsgi_use_cheaper: false
