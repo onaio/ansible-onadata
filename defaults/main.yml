@@ -90,8 +90,8 @@ onadata_domain: "example.com"
 # See: https://docs.celeryproject.org/en/stable/userguide/workers.html#max-memory-per-child-setting
 onadata_use_celery_5_imports: true
 onadata_celery_worker_max_memory: 390625 # 400MB in Kibibyte
-onadata_celeryd_nodes: "{{ onadata_domain }} export-node publish-xls-form-node google-export xlsx-exports csv-exports kml-exports osm-exports csv-zip-exports sav-zip-exports external-exports zip-exports osm-exports exports"
-onadata_celeryd_opts: "-O fair --concurrency=8 --autoscale=6,1 -Q:{{ onadata_domain }} celery -Q:export-node exports -Q:publish-xls-form-node publish_xlsform -Q:google-export google_export -Q:xlsx-exports xlsx_exports -Q:csv-exports csv_exports -Q:kml-exports kml_exports -Q:osm-exports osm-exports -Q:csv-zip-exports csv_zip_exports -Q:sav-zip-exports sav_zip_exports -Q:external-exports external_exports -Q:zip-exports zip_exports -Q:osm-exports osm_exports -Q:exports exports --max-memory-per-child={{ onadata_celery_worker_max_memory }}"
+onadata_celeryd_nodes: "{{ onadata_domain }} export-node publish-xls-form-node google-export xlsx-exports csv-exports kml-exports osm-exports csv-zip-exports sav-zip-exports external-exports zip-exports osm-exports exports permissions-async"
+onadata_celeryd_opts: "-O fair --concurrency=8 --autoscale=6,1 -Q:{{ onadata_domain }} celery -Q:export-node exports -Q:publish-xls-form-node publish_xlsform -Q:google-export google_export -Q:xlsx-exports xlsx_exports -Q:csv-exports csv_exports -Q:kml-exports kml_exports -Q:osm-exports osm-exports -Q:csv-zip-exports csv_zip_exports -Q:sav-zip-exports sav_zip_exports -Q:external-exports external_exports -Q:zip-exports zip_exports -Q:osm-exports osm_exports -Q:exports exports -Q:permissions-async permissions_async --max-memory-per-child={{ onadata_celery_worker_max_memory }}"
 # Task hard time limit in seconds. Celery kills & replaces a worker processing a task that exceeds set time
 # See: https://docs.celeryproject.org/en/stable/userguide/configuration.html#std:setting-task_time_limit
 onadata_celery_task_time_limit: 3600 # 1 hour
@@ -206,6 +206,9 @@ onadata_celery_task_route:
     - "google_export.tasks.sync_update_google_sheets"
     - "google_export.tasks.sync_delete_google_sheets"
     - "onadata.apps.viewer.tasks.create_google_sheet_export"
+  permissions_async:
+    - "onadata.libs.utils.project_utils.set_project_perms_to_xform_async"
+    - "onadata.libs.utils.project_utils.propagate_project_permissions_async"
 
 # Cache control maximum age in seconds
 onadata_cache_control_max_age: 30
