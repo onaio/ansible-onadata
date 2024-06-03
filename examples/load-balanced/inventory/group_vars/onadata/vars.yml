@@ -1,7 +1,7 @@
 ---
 # Onadata General
 onadata_django_secret_key: "somesecret"
-onadata_version: "v3.14.2"
+onadata_version: "v4.1.0"
 onadata_domain: "example.com"
 onadata_email_admins:
   - name: "Ona Data"
@@ -20,9 +20,7 @@ onadata_pid_socks_dir: "/var/run/{{ onadata_service_name }}"
 onadata_pid_file: "{{ onadata_pid_socks_dir }}/{{ onadata_service_name }}.pid"
 
 # Onadata celery
-onadata_celeryd_nodes: "{{ nginx_server_name }} export-node publish-xls-form-node google-export xlsx-exports csv-exports kml-exports osm-exports csv-zip-exports sav-zip-exports external-exports zip-exports osm-exports exports post-processing csv-imports delete-xforms messaging"
-onadata_celeryd_opts: "-O fair --concurrency=4 --autoscale=6,2 -Q:{{ nginx_server_name }} celery -Q:export-node exports -Q:publish-xls-form-node publish_xlsform -Q:google-export google_export -Q:xlsx-exports xlsx_exports -Q:csv-exports csv_exports -Q:kml-exports kml_exports -Q:osm-exports osm-exports -Q:csv-zip-exports csv_zip_exports -Q:sav-zip-exports sav_zip_exports -Q:external-exports external_exports -Q:zip-exports zip_exports -Q:osm-exports osm_exports -Q:exports exports -Q:csv-imports csv_imports -Q:delete-xforms delete_xforms -Q:messaging messaging"
-
+nginx_server_name: "example.com"
 # How long (in seconds or timedelta) a celery task should be considered valid
 # see http://docs.celeryproject.org/en/master/userguide/configuration.html#std:setting-result_expires
 onadata_celery_task_result_expires: 3600
