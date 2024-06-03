@@ -2,17 +2,17 @@
 - src: https://github.com/onaio/ansible-django.git
   name: onaio.django
   scm: git
-  version: afc3de8917d0e0abc6c54d8a531219357522fd52
+  version: 58f95973baafab22d41bd14d96dd94f3a1d2cc68
 
 - src: https://github.com/onaio/ansible-ssl-certificate.git
   name: onaio.ssl-certificate
   scm: git
-  version: f382d69ae6a8c733ddac183f0d0b3dcd8be51cfd
+  version: 5c33a9ddf298d6a20914c2b7d9e2ecb2d1c7a763
 
 - src: https://github.com/onaio/ansible-nginx.git
   name: onaio.nginx
   scm: git
-  version: 82be3d4638b1422f1ceaffe6658bb3373da6c745
+  version: 35219bb0fbc358017db30ef7a258b25b5e84ab79
 
 - src: https://github.com/onaio/ansible-gpg-import.git
   name: onaio.gpg-import
@@ -22,43 +22,40 @@
 - src: https://github.com/onaio/ansible-postgresql.git
   name: onaio.postgresql
   scm: git
-  version: a630676e0e13574a53cfa26ca326e4f4d06d30b1
+  version: 762e90937d165fca6155dc1d38d60212443eb79e
 
 - src: https://github.com/onaio/ansible-onadata.git
   name: onaio.onadata
   scm: git
-  version: 9a59d140b0a4c3721a94e4793e05ccb92910bca4
+  version: e4ae4bcc8dd7715140fcb7f30aadaeba6188fe74
 
 - src: https://github.com/onaio/ansible-rabbitmq.git
   name: onaio.rabbitmq
   scm: git
-  version: 95ca24c2553954e224d6a7808c81624a1f5a67c1
+  version: update-new-repository
 
 - src: https://github.com/onaio/ansible-monit.git
   name: onaio.monit
   scm: git
-  version: 6dc374e7be8f40eb51eef95ab1dff029d9e13674
+  version: a7412bfc3078dacbf47840bceee4e121e82e54ec
 
 - src: geerlingguy.memcached
-  version: 1.1.0
-
-- src: kbrebanov.erlang
-  version: v3.0.0
+  version: 2.2.0
 
 - src: https://github.com/onaio/ansible-backup.git
   name: onaio.backup
   scm: git
-  version: 8b385675aa6980699719a7f940e98e68d3ba37f4
+  version: ea06304f56d2c864336b0c39391c720940065169
 
 - src: https://github.com/onaio/ansible-java.git
   name: onaio.java
   scm: git
-  version: 0877b49298034bdf459dfbc9027fd03a983c9e76
+  version: 6551af3cd0b499cbc34c87552b77bbc5365563b4
 
 - src: https://github.com/onaio/ansible-pgbouncer.git
   name: onaio.pgbouncer
   scm: git
-  version: 88d5e8dfc403d9de3c7954d426823546ff33a1cb
+  version: 7e7d54d206874bfabe6a8ed1140f7906b8e7e1ee
 
 - src: https://github.com/onaio/ansible-collectd.git
   name: onaio.collectd
@@ -75,14 +72,16 @@
   scm: git
   version: dd5c5ee9bd5d45b5e5f6186b5e63e4eba486d8e5
 
-- src: ANXS.postgresql
-  version: v1.11.1
+- src: https://github.com/ANXS/postgresql.git
+  name: ANXS.postgresql
+  scm: git
+  version: 2697f93749651d1a3aaac2d5cd8b50fa51d978f3
 
 - src: bertvv.samba
   version: v2.7.1
 
 - src: arillso.users
-  version: 1.4.5
+  version: 1.4.6
 
 - src: https://github.com/onaio/ansible-systemd-cifs-mount.git
   name: onaio.systemd_cifs_mount
