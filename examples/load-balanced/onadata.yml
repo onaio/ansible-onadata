@@ -25,6 +25,7 @@
         - cifs
     - role: onaio.nginx
       become: true
+      nginx: "nginx=1.26.*"
       tags:
         - nginx
     - role: onaio.monit
