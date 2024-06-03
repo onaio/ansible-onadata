@@ -12,7 +12,7 @@
 - src: https://github.com/onaio/ansible-nginx.git
   name: onaio.nginx
   scm: git
-  version: a962b5418e092530a0c293b111d482ce1d8f877e
+  version: 35219bb0fbc358017db30ef7a258b25b5e84ab79
 
 - src: https://github.com/onaio/ansible-gpg-import.git
   name: onaio.gpg-import
@@ -22,12 +22,12 @@
 - src: https://github.com/onaio/ansible-postgresql.git
   name: onaio.postgresql
   scm: git
-  version: e58bdd852654452be08427d181d678ad3ff67ab8
+  version: 762e90937d165fca6155dc1d38d60212443eb79e
 
 - src: https://github.com/onaio/ansible-onadata.git
   name: onaio.onadata
   scm: git
-  version: 8e0d32e181c8e4570a1ef7de3fc32c218d7352d4
+  version: e4ae4bcc8dd7715140fcb7f30aadaeba6188fe74
 
 - src: https://github.com/onaio/ansible-rabbitmq.git
   name: onaio.rabbitmq
@@ -40,12 +40,12 @@
   version: a7412bfc3078dacbf47840bceee4e121e82e54ec
 
 - src: geerlingguy.memcached
-  version: 1.1.0
+  version: 2.2.0
 
 - src: https://github.com/onaio/ansible-backup.git
   name: onaio.backup
   scm: git
-  version: 9e5d3e00ec15fff0fc916b8cbc224731f28dde05
+  version: ea06304f56d2c864336b0c39391c720940065169
 
 - src: https://github.com/onaio/ansible-java.git
   name: onaio.java
