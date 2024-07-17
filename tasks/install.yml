@@ -25,10 +25,18 @@
   when:
     - not onadata_unmanaged_git_key
 
+- name: Install docs.pip
+  become: true
+  become_user: "{{ onadata_system_user }}"
+  shell: "source {{ onadata_venv_path }}/bin/activate && python -m pip install --no-cache-dir -r requirements/docs.pip"
+  args:
+    executable: /bin/bash
+    chdir: "{{ onadata_codebase_path }}"
+
 - name: Generate Docs
   become: true
   become_user: "{{ onadata_system_user }}"
-  shell: "source {{ onadata_venv_path }}/bin/activate && /usr/bin/make html"
+  shell: "source {{ onadata_venv_path }}/bin/activate && make html"
   args:
     executable: /bin/bash
     chdir: "{{ onadata_codebase_path }}/docs"
