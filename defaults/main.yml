@@ -209,6 +209,9 @@ onadata_celery_task_route:
   permissions_async:
     - "onadata.libs.utils.project_utils.set_project_perms_to_xform_async"
     - "onadata.libs.utils.project_utils.propagate_project_permissions_async"
+    - "onadata.apps.api.tasks.add_org_user_and_share_projects_async"
+    - "onadata.apps.api.tasks.remove_org_user_async"
+    - "onadata.apps.api.tasks.share_project_async"
 
 # Cache control maximum age in seconds
 onadata_cache_control_max_age: 30
