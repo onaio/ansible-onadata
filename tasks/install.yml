@@ -40,3 +40,9 @@
   args:
     executable: /bin/bash
     chdir: "{{ onadata_codebase_path }}/docs"
+
+- name: Fix libsassl erorr
+  become: true
+  shell: "ln -sfn /usr/lib/x86_64-linux-gnu/sasl2/ /usr/lib64/sasl2"
+  args:
+    executable: /bin/bash
