@@ -480,12 +480,14 @@ LOGGING = {
         },
     },
     'handlers': {
+        {% if add_mail_admins_logging_handler %}
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['require_debug_false', 'skip_suspicious_operations'],
             'class': 'django.utils.log.AdminEmailHandler',
             'email_backend': '{{ onadata_mail_admins_email_backend }}'
         },
+        {% endif %}
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',

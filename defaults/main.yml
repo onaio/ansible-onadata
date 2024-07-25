@@ -1,4 +1,5 @@
 ---
+add_mail_admins_logging_handler: false
 onadata_system_user: "onadata"
 onadata_system_group: "{{ onadata_system_user }}"
 onadata_system_user_home: "/home/{{ onadata_system_user }}"
