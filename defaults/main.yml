@@ -243,7 +243,8 @@ onadata_wsgi_cheaper_overload: 30
 
 # Pricing library
 onadata_include_pricing: false
-onadata_pricing_version: "v0.8.0"
+onadata_load_pricing_account_fixtures: false
+onadata_pricing_version: "v2.1.4"
 onadata_zoho_auth_token:
 onadata_zoho_api_token:
 onadata_zoho_org_id:
