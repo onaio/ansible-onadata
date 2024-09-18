@@ -244,7 +244,7 @@ onadata_pricing_version: "v0.8.0"
 onadata_zoho_auth_token:
 onadata_zoho_api_token:
 onadata_zoho_org_id:
-onadata_zoho_api_url: "https://subscriptions.zoho.com/api/v1"
+onadata_zoho_api_url: "https://www.zohoapis.com/billing/v1"
 
 # Email Verification
 onadata_enable_email_verification: "False"
