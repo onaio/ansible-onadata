@@ -164,6 +164,14 @@ AZURE_ACCOUNT_KEY = '{{ onadata_azure_account_key }}'
 AZURE_CONTAINER = '{{ onadata_azure_container }}'
 {% endif %}
 
+
+{% if DEFAULT_FILE_STORAGE is defined %}:
+STORAGES = {
+      'default': {'BACKEND': DEFAULT_FILE_STORAGE or 'storages.backends.s3boto3.S3Boto3Storage'},
+      'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'}
+}
+{% endif %}
+
 ADMINS = (
 {% for cur_admin in onadata_email_admins %}
     ('{{ cur_admin.name }}', '{{ cur_admin.email }}'),
@@ -257,7 +265,7 @@ if {{ onadata_enketo_offline }}:
 ENKETO_AUTH_COOKIE = '{{ onadata_enketo_auth_cookie }}'
 ENKETO_META_UID_COOKIE = '{{ onadata_enketo_meta_uid_cookie }}'
 
-if {{ onadata_use_aws }}:
+if {{ DEFAULT_FILE_STORAGE is defined }}:
     # source http://dryan.me/articles/elb-django-allowed-hosts/
     # add ec2 private ip - ensures load balancer has access
     import requests
@@ -437,9 +445,10 @@ from sentry_sdk.integrations.django import DjangoIntegration
 sentry_sdk.init(
     dsn='{{ onadata_sentry_dsn }}',
     integrations=[DjangoIntegration()],
-    traces_sample_rate=1.0,
+    traces_sample_rate=0.001,
     send_default_pii=False,
     release='{{ onadata_version }}',
+    environment='{{ onadata_s3_bucket }}'
 )
 RAVEN_CONFIG = {
     'dsn': '{{ onadata_sentry_dsn }}',
