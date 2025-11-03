@@ -46,3 +46,11 @@
   shell: "ln -sfn /usr/lib/x86_64-linux-gnu/sasl2/ /usr/lib64/sasl2"
   args:
     executable: /bin/bash
+
+- name: Add /var/log/celery path
+  become: true
+  ansible.builtin.file:
+    mode: 0755
+    path: /var/log/celery
+    state: directory
+    owner: "{{ onadata_system_user }}"
