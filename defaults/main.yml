@@ -92,8 +92,8 @@ onadata_domain: "example.com"
 # See: https://docs.celeryproject.org/en/stable/userguide/workers.html#max-memory-per-child-setting
 onadata_use_celery_5_imports: true
 onadata_celery_worker_max_memory: 390625  # 400MB in Kibibyte
-onadata_celeryd_nodes: "{{ onadata_domain }} export-node publish-xls-form-node google-export xlsx-exports csv-exports kml-exports osm-exports csv-zip-exports sav-zip-exports external-exports zip-exports osm-exports exports permissions-async"
-onadata_celeryd_opts: "-O fair --concurrency=8 --autoscale=6,1 -Q:{{ onadata_domain }} celery -Q:export-node exports -Q:publish-xls-form-node publish_xlsform -Q:google-export google_export -Q:xlsx-exports xlsx_exports -Q:csv-exports csv_exports -Q:kml-exports kml_exports -Q:osm-exports osm-exports -Q:csv-zip-exports csv_zip_exports -Q:sav-zip-exports sav_zip_exports -Q:external-exports external_exports -Q:zip-exports zip_exports -Q:osm-exports osm_exports -Q:exports exports -Q:permissions-async permissions_async --max-memory-per-child={{ onadata_celery_worker_max_memory }}"
+onadata_celeryd_nodes: "light heavy"
+onadata_celeryd_opts: "-O fair --pool=prefork --prefetch-multiplier=1 --max-memory-per-child:light=1048576 --max-memory-per-child:heavy=2097152 --concurrency:light=2 --concurrency:heavy=1 -Q:light celery,publish_xlsform,permissions_async -Q:heavy exports,xlsx_exports,csv_exports,kml_exports,osm_exports,csv_zip_exports,sav_zip_exports,zip_exports,external_exports,google_export"
 # Task hard time limit in seconds. Celery kills & replaces a worker processing a task that exceeds set time
 # See: https://docs.celeryproject.org/en/stable/userguide/configuration.html#std:setting-task_time_limit
 onadata_celery_task_time_limit: 3600  # 1 hour
