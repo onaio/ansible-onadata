@@ -46,6 +46,11 @@ onadata_python_packages:
   - python-celery-common
   - python3-sphinx
 onadata_setuptools_version: ~
+onadata_dependency_pip_packages:
+  - "pip>=24.0"
+  - "setuptools>=75.0,<81"
+  - "wheel>=0.43"
+  - "setuptools-scm<9"
 onadata_pip_git_packages: []
 onadata_pip_paths:
   - "{{ onadata_checkout_path }}/requirements/base.pip"
