@@ -18,4 +18,4 @@
     virtualenv: "{{ onadata_venv_path }}"
     fixtures: "{{ onadata_venv_path }}/src/pricing/pricing/fixtures/initial_accounts.json"
     settings: "{{ onadata_settings_module }}"
-  when: onadata_include_pricing
+  when: onadata_load_pricing_account_fixtures

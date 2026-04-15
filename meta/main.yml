@@ -72,6 +72,7 @@ dependencies:
       django_wsgi_socket: "{{ onadata_wsgi_socket }}"
       django_remove_git_key: "{{ onadata_unmanaged_git_key }}"
       django_setuptools_version: "{{ onadata_setuptools_version }}"
+      django_dependency_pip_packages: "{{ onadata_dependency_pip_packages }}"
       django_wsgi_use_cheaper: "{{ onadata_wsgi_use_cheaper }}"
       django_wsgi_cheaper_algo: "{{ onadata_wsgi_cheaper_algo }}"
       django_wsgi_cheaper_min_workers: "{{ onadata_wsgi_cheaper_min_workers }}"

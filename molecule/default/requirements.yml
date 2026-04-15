@@ -2,7 +2,7 @@
 - src: https://github.com/onaio/ansible-django.git
   name: onaio.django
   scm: git
-  version: a6a19b393de166d1cbbd9fb3c7cdf3a6c1c058dd
+  version: 6d5572fa1ee9e1cb6c0e425e181a618cf6ca095f
 
 - src: https://github.com/onaio/ansible-ssl-certificate.git
   name: onaio.ssl-certificate
@@ -11,4 +11,4 @@
 - src: https://github.com/onaio/ansible-java.git
   name: onaio.java
   scm: git
-  version: dc5db6258b7f24c7d7eafc7b2049cab9252e2a04
+  version: d077bce819f1f214c9a6d78735f9b9604374ca6a

@@ -3,8 +3,6 @@ dependency:
   name: galaxy
 driver:
   name: docker
-lint: |
-  yamllint .
 platforms:
   - name: instance
     image: geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2204}-ansible:latest

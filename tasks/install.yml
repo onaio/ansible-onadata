@@ -25,10 +25,32 @@
   when:
     - not onadata_unmanaged_git_key
 
+- name: Install docs.pip
+  become: true
+  become_user: "{{ onadata_system_user }}"
+  shell: "source {{ onadata_venv_path }}/bin/activate && python -m pip install --no-cache-dir -r requirements/docs.pip"
+  args:
+    executable: /bin/bash
+    chdir: "{{ onadata_codebase_path }}"
+
 - name: Generate Docs
   become: true
   become_user: "{{ onadata_system_user }}"
-  shell: "source {{ onadata_venv_path }}/bin/activate && /usr/bin/make html"
+  shell: "source {{ onadata_venv_path }}/bin/activate && make html"
   args:
     executable: /bin/bash
     chdir: "{{ onadata_codebase_path }}/docs"
+
+- name: Fix libsassl erorr
+  become: true
+  shell: "ln -sfn /usr/lib/x86_64-linux-gnu/sasl2/ /usr/lib64/sasl2"
+  args:
+    executable: /bin/bash
+
+- name: Add /var/log/celery path
+  become: true
+  ansible.builtin.file:
+    mode: 0755
+    path: /var/log/celery
+    state: directory
+    owner: "{{ onadata_system_user }}"
