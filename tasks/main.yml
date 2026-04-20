@@ -9,3 +9,6 @@
   when: onadata_run_init_commands
   tags:
     - init
+
+- name: Change EMQX cert and key file ownership
+  include_tasks: chown-emqtt-certs.yaml
