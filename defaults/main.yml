@@ -134,6 +134,8 @@ onadata_celery_result_backend: "cache+memcached://{{ onadata_memcached_uri }}"
 #  - redis
 onadata_cache_backend: "memcached"
 onadata_memcached_uri: "127.0.0.1:11211"
+onadata_memcached_options:
+  behaviors: {}
 onadata_redis_url: "redis://127.0.0.1:6379/7"
 onadata_aws_access_key: ~
 onadata_aws_secret_key: ~

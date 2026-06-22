@@ -376,6 +376,7 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
         'LOCATION': "{{ onadata_memcached_uri }}",
+        'OPTIONS': {{ onadata_memcached_options }},
     }
 }
 {% elif onadata_cache_backend == 'redis' %}
