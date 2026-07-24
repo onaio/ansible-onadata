@@ -19,7 +19,7 @@
       changed_when: false
       failed_when: systemctl_status.rc > 1
   roles:
-    - role: onaio.onadata
+    - role: ../../..
       onadata_python_source_version: "3.12"
       onadata_run_init_commands: false
       onadata_enable_celery: true
