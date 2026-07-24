@@ -1,11 +1,46 @@
 ---
+- name: Resolve the custom template version to a commit SHA
+  become: true
+  become_user: "{{ onadata_system_user }}"
+  command: "git ls-remote {{ onadata_custom_template_git_url }} {{ onadata_custom_template_version }}"
+  register: onadata_template_ls_remote
+  changed_when: false
+  check_mode: false
+  when: onadata_enable_custom_templates
+
+- name: Read the installed custom template marker
+  slurp:
+    src: "{{ onadata_codebase_path }}/.custom_template_version"
+  register: onadata_template_marker
+  failed_when: false
+  when: onadata_enable_custom_templates
+
+- name: Set custom template facts
+  set_fact:
+    onadata_template_desired_sha: "{{ (onadata_template_ls_remote.stdout_lines | last).split() | first }}"
+    onadata_template_installed_sha: >-
+      {{ (onadata_template_marker.content | b64decode | trim)
+         if onadata_template_marker.content is defined else '' }}
+  when: onadata_enable_custom_templates
+
 - name: Install the custom template # noqa 301
   become: true
   become_user: "{{ onadata_system_user }}"
   shell: "(git remote add template {{ onadata_custom_template_git_url }} || true) && git fetch template {{ onadata_custom_template_version }} && git reset HEAD onadata/libs/custom_template && rm -rf onadata/libs/custom_template && git read-tree --prefix=onadata/libs/custom_template -u template/{{ onadata_custom_template_version }}" # noqa 204
   args:
     executable: /bin/bash
-    chdir: "{{ onadata_checkout_path }}"
+    chdir: "{{ onadata_codebase_path }}"
+  when:
+    - onadata_enable_custom_templates
+    - onadata_template_desired_sha != onadata_template_installed_sha
+
+- name: Record the installed custom template version
+  become: true
+  copy:
+    content: "{{ onadata_template_desired_sha }}\n"
+    dest: "{{ onadata_codebase_path }}/.custom_template_version"
+    owner: "{{ onadata_system_user }}"
+    mode: "0644"
   when: onadata_enable_custom_templates
 
 - name: Install tableau library
@@ -25,27 +60,38 @@
   when:
     - not onadata_unmanaged_git_key
 
-- name: Install docs.pip
+- name: Install docs requirements
   become: true
   become_user: "{{ onadata_system_user }}"
-  shell: "source {{ onadata_venv_path }}/bin/activate && python -m pip install --no-cache-dir -r requirements/docs.pip"
-  args:
-    executable: /bin/bash
-    chdir: "{{ onadata_codebase_path }}"
+  pip:
+    requirements: "{{ onadata_codebase_path }}/requirements/docs.pip"
+    virtualenv: "{{ onadata_venv_path }}"
+    extra_args: "--no-cache-dir"
 
 - name: Generate Docs
   become: true
   become_user: "{{ onadata_system_user }}"
-  shell: "source {{ onadata_venv_path }}/bin/activate && make html"
+  command: make html
   args:
-    executable: /bin/bash
     chdir: "{{ onadata_codebase_path }}/docs"
+    creates: "{{ onadata_codebase_path }}/docs/_build/html/index.html"
+  environment:
+    PATH: "{{ onadata_venv_path }}/bin:{{ ansible_env.PATH }}"
 
-- name: Fix libsassl erorr
+- name: Ensure /usr/lib64 exists
   become: true
-  shell: "ln -sfn /usr/lib/x86_64-linux-gnu/sasl2/ /usr/lib64/sasl2"
-  args:
-    executable: /bin/bash
+  ansible.builtin.file:
+    path: /usr/lib64
+    state: directory
+    mode: "0755"
+
+- name: Link sasl2 modules into /usr/lib64
+  become: true
+  ansible.builtin.file:
+    src: /usr/lib/x86_64-linux-gnu/sasl2
+    dest: /usr/lib64/sasl2
+    state: link
+    force: true
 
 - name: Add /var/log/celery path
   become: true
