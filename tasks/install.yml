@@ -88,7 +88,9 @@
 - name: Link sasl2 modules into /usr/lib64
   become: true
   ansible.builtin.file:
-    src: /usr/lib/x86_64-linux-gnu/sasl2
+    # Trailing slash matches the target string the old `ln -sfn` shell task
+    # wrote on existing hosts, so the link is not rewritten on first run.
+    src: /usr/lib/x86_64-linux-gnu/sasl2/
     dest: /usr/lib64/sasl2
     state: link
     force: true
