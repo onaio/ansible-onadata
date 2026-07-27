@@ -57,6 +57,9 @@
     path: "{{ onadata_system_user_home }}/.ssh/{{ onadata_git_key_filename }}"
   become: true
   become_user: "{{ onadata_system_user }}"
+  # Real removal in --check too: the django role copies the key for real in
+  # check mode (its version check needs it), so cleanup must match.
+  check_mode: false
   when:
     - not onadata_unmanaged_git_key
 
