@@ -28,3 +28,11 @@ def test_django_service(host):
     assert celerybeat_onadata.is_running
     assert celerybeat_onadata.is_enabled
 
+
+def test_versioned_release_marker(host):
+    app = host.file("/home/onadata/app")
+    assert app.is_symlink
+
+    marker = host.file("/home/onadata/app/.deployed_version")
+    assert marker.exists
+    assert len(marker.content_string.strip()) == 40
