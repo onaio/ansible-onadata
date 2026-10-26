@@ -1,4 +1,16 @@
 ---
+- name: Keep the system and Java CA certificate stores up to date
+  become: true
+  apt:
+    name:
+      - ca-certificates
+      - ca-certificates-java
+    state: latest
+    update_cache: true
+  tags:
+    - install
+    - java
+
 - name: Install extras
   include_tasks: install.yml
   tags:
