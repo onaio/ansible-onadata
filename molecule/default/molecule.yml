@@ -16,6 +16,11 @@ platforms:
       LANG: "C.UTF-8"
 provisioner:
   name: ansible
+  inventory:
+    host_vars:
+      instance:
+        # Discovery prefers a versioned python3.x, which lacks the system apt bindings
+        ansible_python_interpreter: /usr/bin/python3
   playbooks:
     converge: converge.yml
 scenario:
