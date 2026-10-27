@@ -3,3 +3,4 @@ profile: production
 exclude_paths:
   - .github/
   - .travis.yml.deprecated
+  - examples/

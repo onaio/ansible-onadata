@@ -9,4 +9,5 @@ Icon
 .vagrant
 test
 *.pyc
-*.log.ansible/
+*.log
+.ansible/
