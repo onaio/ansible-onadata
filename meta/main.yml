@@ -6,14 +6,14 @@ galaxy_info:
   description: Installs and configures Ona Data
   company: Ona Systems Inc
   license: Apache-2.0
-  min_ansible_version: 2.6
+  min_ansible_version: "2.6"
   platforms:
     - name: Ubuntu
       versions:
-        - 18.04
-        - 20.04
-        - 22.04
-        - 24.04
+        - bionic
+        - focal
+        - jammy
+        - noble
   galaxy_tags:
     - ona
     - onadata

@@ -4,11 +4,13 @@
   become: true
   pre_tasks:
     - name: Update apt cache.
-      apt: update_cache=yes cache_valid_time=600
+      ansible.builtin.apt:
+        update_cache: "yes"
+        cache_valid_time: "600"
       when: ansible_os_family == 'Debian'
 
-    - name: Wait for systemd to complete initialization.  # noqa 303
-      command: systemctl is-system-running
+    - name: Wait for systemd to complete initialization. # noqa: command-instead-of-module
+      ansible.builtin.command: systemctl is-system-running
       register: systemctl_status
       until: >
         'running' in systemctl_status.stdout or
@@ -18,13 +20,16 @@
       when: ansible_service_mgr == 'systemd'
       changed_when: false
       failed_when: systemctl_status.rc > 1
-  roles:
-    - role: ../../..
-      onadata_python_source_version: "3.13"
-      onadata_run_init_commands: false
-      onadata_enable_celery: true
-      onadata_manage_services: true
-      onadata_version: "v5.31.3"
-      onadata_celeryd_extra_env_vars:
-        LC_ALL: en_US.UTF-8
-        LANG: en_US.UTF-8
+  tasks:
+    - name: Run the role
+      ansible.builtin.include_role:
+        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}"
+      vars:
+        onadata_python_source_version: "3.13"
+        onadata_run_init_commands: false
+        onadata_enable_celery: true
+        onadata_manage_services: true
+        onadata_version: "v5.31.3"
+        onadata_celeryd_extra_env_vars:
+          LC_ALL: en_US.UTF-8
+          LANG: en_US.UTF-8

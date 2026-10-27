@@ -2,7 +2,7 @@
 - name: Run Django init commands
   become: true
   become_user: "{{ onadata_system_user }}"
-  django_manage:
+  community.general.django_manage:
     command: "{{ item }}"
     app_path: "{{ onadata_codebase_path }}"
     virtualenv: "{{ onadata_venv_path }}"
@@ -12,7 +12,7 @@
 - name: Load pricing account fixture
   become: true
   become_user: "{{ onadata_system_user }}"
-  django_manage:
+  community.general.django_manage:
     command: loaddata
     app_path: "{{ onadata_codebase_path }}"
     virtualenv: "{{ onadata_venv_path }}"
