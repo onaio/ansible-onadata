@@ -45,7 +45,7 @@ onadata_python_packages:
   - python3-pip
   - python-celery-common
   - python3-sphinx
-onadata_setuptools_version: ~
+onadata_setuptools_version:
 onadata_dependency_pip_packages:
   - "pip>=24.0"
   - "setuptools>=75.0,<81"
@@ -63,8 +63,8 @@ onadata_version: "v3.8.6"
 onadata_git_url: "https://github.com/onaio/onadata.git"
 onadata_custom_template_git_url: "https://github.com/onaio/onadata-template.git"
 onadata_enable_custom_templates: false
-onadata_git_key_content: ~
-onadata_git_key_ssh_file: ~
+onadata_git_key_content:
+onadata_git_key_ssh_file:
 onadata_git_key_filename: "id_ed25519"
 onadata_custom_template_version: "master"
 onadata_service_name: "{{ onadata_system_user }}"
@@ -76,8 +76,8 @@ onadata_log_path: "/var/log/{{ onadata_service_name }}"
 onadata_recreate_virtual_env: false
 onadata_local_settings_path: "{{ onadata_checkout_path }}/onadata/preset/local_settings.py"
 onadata_settings_template_path: "onadata_checkout_path/onadata/preset/local_settings.py.j2"
-onadata_login_url: ~
-onadata_init_commands: []  # migrate --noinput, collectstatic --noinput
+onadata_login_url:
+onadata_init_commands: [] # migrate --noinput, collectstatic --noinput
 onadata_static_path: "{{ onadata_checkout_path }}/onadata/static/"
 onadata_media_path: "{{ onadata_system_user_home }}/media"
 onadata_media_path_mode: "0755"
@@ -94,12 +94,16 @@ onadata_domain: "example.com"
 # by a new worker. Value should be in KiB
 # See: https://docs.celeryproject.org/en/stable/userguide/workers.html#max-memory-per-child-setting
 onadata_use_celery_5_imports: true
-onadata_celery_worker_max_memory: 390625  # 400MB in Kibibyte
+onadata_celery_worker_max_memory: 390625 # 400MB in Kibibyte
 onadata_celeryd_nodes: "light heavy"
-onadata_celeryd_opts: "--pool=prefork -O fair --prefetch-multiplier=1 --max-memory-per-child=1048576 --max-tasks-per-child=100 --concurrency:light=2 --concurrency:heavy=1 -Q:light celery,publish_xlsform,permissions_async -Q:heavy exports,xlsx_exports,csv_exports,kml_exports,osm_exports,csv_zip_exports,sav_zip_exports,zip_exports,external_exports,google_export"
+onadata_celeryd_opts: >-
+  --pool=prefork -O fair --prefetch-multiplier=1 --max-memory-per-child=1048576 --max-tasks-per-child=100
+  --concurrency:light=2 --concurrency:heavy=1
+  -Q:light celery,publish_xlsform,permissions_async
+  -Q:heavy exports,xlsx_exports,csv_exports,kml_exports,osm_exports,csv_zip_exports,sav_zip_exports,zip_exports,external_exports,google_export
 # Task hard time limit in seconds. Celery kills & replaces a worker processing a task that exceeds set time
 # See: https://docs.celeryproject.org/en/stable/userguide/configuration.html#std:setting-task_time_limit
-onadata_celery_task_time_limit: 3600  # 1 hour
+onadata_celery_task_time_limit: 3600 # 1 hour
 # The maximum number of tasks a worker can execute before it's replaced with a new worker
 # See: https://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-worker_max_tasks_per_child
 onadata_celery_worker_max_tasks: 100
@@ -116,15 +120,15 @@ onadata_celerybeat_extra_env_vars: []
 onadata_celeryd_extra_env_vars: []
 onadata_pgsql_db: "onadata"
 onadata_pgsql_user: "onadata"
-onadata_pgsql_password: ~
+onadata_pgsql_password:
 onadata_pgsql_host: "127.0.0.1"
 onadata_pgsql_port: 5432
 onadata_disable_server_side_cursors: "False"
 onadata_pgsql_replicas: []
-onadata_kpi_formbuilder_url: ~
+onadata_kpi_formbuilder_url:
 onadata_django_secret_key: "secret"
 onadata_rabbitmq_user: onadata
-onadata_rabbitmq_password: ~
+onadata_rabbitmq_password:
 onadata_rabbitmq_host: 127.0.0.1
 onadata_rabbitmq_port: 5672
 onadata_celery_broker_url: "amqp://{{ onadata_rabbitmq_user }}:{{ onadata_rabbitmq_password }}@{{ onadata_rabbitmq_host }}:{{ onadata_rabbitmq_port }}/"
@@ -135,21 +139,21 @@ onadata_celery_result_backend: "cache+memcached://{{ onadata_memcached_uri }}"
 onadata_cache_backend: "memcached"
 onadata_memcached_uri: "127.0.0.1:11211"
 onadata_redis_url: "redis://127.0.0.1:6379/7"
-onadata_aws_access_key: ~
-onadata_aws_secret_key: ~
-onadata_smtp_host: ~
-onadata_smtp_port: ~
-onadata_smtp_login: ~
-onadata_smtp_password: ~
+onadata_aws_access_key:
+onadata_aws_secret_key:
+onadata_smtp_host:
+onadata_smtp_port:
+onadata_smtp_login:
+onadata_smtp_password:
 onadata_smtp_use_tls: "True"
 onadata_smtp_from: "noreply@example.com"
 # Whether Ona Data is to use AWS's services such as S3
 onadata_use_aws: false
 # Whether OnaData is to use Azure's services such as Blob storage
 onadata_use_azure: false
-onadata_azure_account_name: ~
-onadata_azure_account_key: ~
-onadata_azure_container: ~
+onadata_azure_account_name:
+onadata_azure_account_key:
+onadata_azure_container:
 onadata_s3_bucket: "{{ onadata_domain | replace('.', '-') }}-onadata"
 onadata_s3_region: "eu-west-1"
 onadata_email_admins:
@@ -165,16 +169,16 @@ onadata_cors_expose_headers: []
 onadata_use_x_forwarded_host: "False"
 onadata_use_x_forwarded_port: "False"
 onadata_csrf_trusted_origins: []
-onadata_google_site_verification: ~
-onadata_google_analytics_property_id: ~
+onadata_google_site_verification:
+onadata_google_analytics_property_id:
 # Whether to run Ona Data in read-only mode (no writes to database)
 onadata_read_only_mode: "False"
-onadata_jwt_secret_key: ~
+onadata_jwt_secret_key:
 onadata_enketo_auth_cookie_domain: ".example.com"
 onadata_enketo_login_url: "https://{{ onadata_domain }}/login"
 onadata_enketo_url: "https://enketo.{{ onadata_domain }}"
-onadata_enketo_api_salt: ~
-onadata_enketo_api_token: ~
+onadata_enketo_api_salt:
+onadata_enketo_api_token:
 # Whether Enketo is configured to work offline
 onadata_enketo_offline: "True"
 onadata_enketo_auth_cookie: "__enketo"
@@ -250,9 +254,9 @@ onadata_wsgi_cheaper_overload: 30
 onadata_include_pricing: false
 onadata_load_pricing_account_fixtures: false
 onadata_pricing_version: "v2.1.4"
-onadata_zoho_auth_token: ~
-onadata_zoho_api_token: ~
-onadata_zoho_org_id: ~
+onadata_zoho_auth_token:
+onadata_zoho_api_token:
+onadata_zoho_org_id:
 onadata_zoho_api_url: "https://subscriptions.zoho.com/api/v1"
 
 # Email Verification
@@ -262,10 +266,10 @@ onadata_verification_url: "https://{{ onadata_domain }}/email-verification-confi
 
 # Google Integrations (exports)
 onadata_include_google_export: false
-onadata_google_client_id: ~
-onadata_google_client_secret: ~
-onadata_google_project_id: ~
-onadata_google_client_email: "google-integration@{{ onadata_domain|replace('.', '-') }}.iam.gserviceaccount.com"
+onadata_google_client_id:
+onadata_google_client_secret:
+onadata_google_project_id:
+onadata_google_client_email: "google-integration@{{ onadata_domain | replace('.', '-') }}.iam.gserviceaccount.com"
 onadata_google_export_version: "v0.8.0"
 
 # Tableau Support

@@ -11,46 +11,49 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout codebase
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3
+        uses: actions/setup-python@v5
         with:
-          path: "${{ github.repository }}"
+          python-version: '3.13'
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: '3.x'
+      - name: Install lint dependencies
+        run: pip3 install "ansible==14.*" "ansible-lint==26.*" "yamllint==1.*"
 
-      - name: Install dependencies
-        run: pip3 install yamllint
-
-      - name: Lint code
-        working-directory: onaio/ansible-onadata
+      - name: Lint YAML
         run: yamllint .
-  molecule:
+
+      - name: Lint Ansible
+        run: ansible-lint
+
+  test:
     name: Molecule
+    needs: lint
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         distro:
           - ubuntu2204
+          - ubuntu2404
     steps:
-      - name: Checkout codebase
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           path: "${{ github.repository }}"
 
-      - name: Set up Python 3.
-        uses: actions/setup-python@v2
+      - name: Set up Python 3
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.13'
 
-      - name: Install test dependencies.
-        run: pip3 install ansible molecule-plugins[docker] docker pytest-testinfra
+      - name: Install test dependencies
+        run: pip3 install "ansible==14.*" "molecule==26.*" "molecule-plugins[docker]==26.*" docker "pytest-testinfra==10.*"
 
-      - name: Run Molecule tests.
-        working-directory: onaio/ansible-onadata
+      - name: Run Molecule tests
+        working-directory: "${{ github.repository }}"
         run: molecule test
         env:
           PY_COLORS: '1'
